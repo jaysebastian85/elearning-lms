@@ -52,8 +52,12 @@ body {
   animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Print Styling for KRS Document */
+/* Print Styling for Academic Documents (KRS, KHS, Rekap BAAK) */
 @media print {
+  @page {
+    size: A4;
+    margin: 8mm 10mm;
+  }
   body * {
     visibility: hidden;
   }
@@ -66,13 +70,35 @@ body {
     top: 0;
     width: 100%;
     margin: 0;
-    padding: 24px;
+    padding: 0;
     background: white;
     color: black;
   }
   .no-print {
     display: none !important;
   }
+  .page-break-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* Stamp & Official BAAK Badge */
+.official-stamp {
+  border: 3px double #1e3a8a;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #1e3a8a;
+  font-weight: 800;
+  text-transform: uppercase;
+  transform: rotate(-10deg);
+  opacity: 0.85;
 }
 
 /* Custom drag & drop area active state */

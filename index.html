@@ -348,6 +348,10 @@
                 <i data-lucide="clipboard-check" class="w-4 h-4"></i>
                 <span>Pengisian KRS</span>
               </button>
+              <button onclick="navigate('khs')" data-tab="khs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                <span>Kartu Hasil Studi (KHS)</span>
+              </button>
               <button onclick="navigate('assignments')" data-tab="assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
                 <i data-lucide="upload-cloud" class="w-4 h-4"></i>
                 <span>Tugas Kuliah</span>
@@ -471,6 +475,10 @@
                 <button onclick="navigate('krs')" data-tab="krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
                   <i data-lucide="clipboard-check" class="w-4 h-4"></i>
                   <span>KRS Online</span>
+                </button>
+                <button onclick="navigate('khs')" data-tab="khs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                  <span>KHS / Hasil Studi</span>
                 </button>
                 <button onclick="navigate('assignments')" data-tab="assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
                   <i data-lucide="upload-cloud" class="w-4 h-4"></i>
@@ -924,6 +932,117 @@
             </div>
           </div>
 
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 5B. KHS (KARTU HASIL STUDI) SECTION -->
+        <!-- ========================================== -->
+        <section id="section-khs" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kartu Hasil Studi (KHS)</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Transkrip perolehan nilai akademik per semester, Indeks Prestasi Semester (IPS), dan Indeks Prestasi Kumulatif (IPK).</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2.5">
+              <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                <span class="text-xs font-bold text-slate-500">Pilih Semester:</span>
+                <select id="khs-semester-select" onchange="changeKhsSemester(this.value)" class="text-xs font-bold text-indigo-700 bg-transparent focus:outline-none cursor-pointer">
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+              <button onclick="printKhsDocument()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span>Cetak KHS (PDF)</span>
+              </button>
+              <button onclick="printKrsDocument()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-2">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span>Cetak KRS (PDF)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Student & Semester KPI Summary Card -->
+          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+            <div class="md:col-span-2 space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Identitas Mahasiswa</span>
+                <span class="px-3 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800" id="khs-active-semester-label">
+                  Semester 5 (Ganjil 2026/2027)
+                </span>
+              </div>
+              <h3 id="khs-student-name" class="text-lg font-black text-slate-900">-</h3>
+              <p class="text-xs text-slate-500">NIM: <span id="khs-student-nim" class="font-mono font-bold text-slate-700">-</span> • <span id="khs-student-prodi">-</span></p>
+              <p class="text-xs text-slate-500">Dosen Pembimbing Akademik: <span id="khs-student-dosen" class="font-bold text-slate-700">-</span></p>
+            </div>
+
+            <div class="md:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-center">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-indigo-600">IP Semester (IPS)</p>
+                <p id="khs-stat-ips" class="text-xl font-black text-indigo-950 mt-1">3.82</p>
+                <span class="text-[9px] text-indigo-500 font-semibold">Semester ini</span>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 text-center">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">IPK Kumulatif</p>
+                <p id="khs-stat-ipk" class="text-xl font-black text-emerald-950 mt-1">3.84</p>
+                <span class="text-[9px] text-emerald-600 font-semibold">Sangat Memuaskan</span>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-100 text-center">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-purple-600">SKS Diambil</p>
+                <p id="khs-stat-sks-sem" class="text-xl font-black text-purple-950 mt-1">20</p>
+                <span class="text-[9px] text-purple-500 font-semibold">SKS Semester</span>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-100 text-center">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Maks SKS Depan</p>
+                <p class="text-xl font-black text-amber-950 mt-1">24</p>
+                <span class="text-[9px] text-amber-700 font-semibold">Beban Maksimal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KHS Grades Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="font-extrabold text-base text-slate-800">Daftar Hasil Studi & Nilai Mata Kuliah</h3>
+                <p class="text-xs text-slate-400">Rincian nilai angka, huruf mutu, bobot, dan kredit per mata kuliah</p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5">
+                <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
+                Status: Sah & Tervalidasi Dosen PA
+              </span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-3 w-10 text-center">No</th>
+                    <th class="py-3 px-3 w-24">Kode MK</th>
+                    <th class="py-3 px-3">Nama Mata Kuliah</th>
+                    <th class="py-3 px-3 text-center w-16">SKS</th>
+                    <th class="py-3 px-3 text-center w-20">Nilai Akhir</th>
+                    <th class="py-3 px-3 text-center w-16">Huruf</th>
+                    <th class="py-3 px-3 text-center w-16">Bobot</th>
+                    <th class="py-3 px-3 text-center w-20">Mutu (KxN)</th>
+                    <th class="py-3 px-3">Dosen Pengampu</th>
+                    <th class="py-3 px-3 text-center w-20">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="khs-grades-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+                <tfoot class="bg-slate-50 font-bold border-t-2 border-slate-200 text-xs text-slate-800">
+                  <tr>
+                    <td colspan="3" class="py-3.5 px-3 text-right">JUMLAH BEBAN SEMESTER:</td>
+                    <td class="py-3.5 px-3 text-center text-indigo-700 font-extrabold" id="khs-foot-total-sks">-</td>
+                    <td colspan="3" class="py-3.5 px-3 text-right">TOTAL NILAI MUTU:</td>
+                    <td class="py-3.5 px-3 text-center text-indigo-700 font-extrabold" id="khs-foot-total-mutu">-</td>
+                    <td colspan="2" class="py-3.5 px-3 text-right text-emerald-700 font-black" id="khs-foot-ips-label">IPS: -</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
         </section>
 
         <!-- ========================================== -->
@@ -1639,10 +1758,17 @@
               <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Data Mahasiswa</h2>
               <p class="text-xs text-slate-500 mt-0.5">Kelola data induk mahasiswa, program studi, status akademik, dan informasi kontak.</p>
             </div>
-            <button onclick="openStudentModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
-              <i data-lucide="user-plus" class="w-4 h-4"></i>
-              <span>Tambah Mahasiswa Baru</span>
-            </button>
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+              <button onclick="openAdminPrintKrsModal()" class="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5" title="Cetak Riwayat KRS & Kemajuan Studi BAAK Lengkap (Sem 1 s/d Lulus)">
+                <i data-lucide="printer" class="w-4 h-4 text-indigo-600"></i>
+                <span class="hidden sm:inline">Cetak Riwayat KRS (Sem 1 - Lulus)</span>
+                <span class="sm:hidden">Cetak BAAK</span>
+              </button>
+              <button onclick="openStudentModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                <span>Tambah Mahasiswa Baru</span>
+              </button>
+            </div>
           </div>
 
           <!-- Search & Filter Bar -->
@@ -1655,6 +1781,12 @@
                 class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
             </div>
             <div class="flex items-center gap-2">
+              <select id="admin-student-status-filter" onchange="renderAdminStudents()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                <option value="ALL">Semua Status</option>
+                <option value="Lulus">Lulus (Alumni)</option>
+                <option value="Aktif">Mahasiswa Aktif</option>
+                <option value="Cuti">Cuti Akademik</option>
+              </select>
               <select id="admin-student-prodi-filter" onchange="renderAdminStudents()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
                 <option value="ALL">Semua Program Studi</option>
                 <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
@@ -1830,10 +1962,16 @@
               <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen & Validasi Kartu Rencana Studi (KRS)</h2>
               <p class="text-xs text-slate-500 mt-0.5">Kontrol periode pengisian KRS, statistik pemilihan mata kuliah, serta validasi rencana studi mahasiswa.</p>
             </div>
-            <button onclick="toggleKrsPeriod()" id="admin-krs-period-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
-              <i data-lucide="power" class="w-4 h-4"></i>
-              <span id="admin-krs-period-text">Periode KRS: DIBUKA</span>
-            </button>
+            <div class="flex items-center gap-2.5 self-start sm:self-auto">
+              <button onclick="openAdminPrintKrsModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span>Cetak Riwayat KRS Lengkap (Sem 1 - Lulus)</span>
+              </button>
+              <button onclick="toggleKrsPeriod()" id="admin-krs-period-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                <i data-lucide="power" class="w-4 h-4"></i>
+                <span id="admin-krs-period-text">Periode KRS: DIBUKA</span>
+              </button>
+            </div>
           </div>
 
           <!-- KRS Period Notice Banner -->
@@ -2757,6 +2895,82 @@
           <button type="button" onclick="approveCurrentStudentKrs()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
             <i data-lucide="check-circle" class="w-4 h-4"></i>
             Setujui & Validasi KRS
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADMIN PREVIEW & PRINT KRS SEJARAH LENGKAP BAAK -->
+  <!-- ========================================== -->
+  <div id="modal-admin-preview-krs-history" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-6 my-8 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 shrink-0">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-indigo-600">Biro Administrasi Akademik & Kemahasiswaan (BAAK)</span>
+          <h3 class="font-extrabold text-slate-900 text-lg sm:text-xl">Cetak Riwayat KRS Lengkap Mahasiswa (Sem 1 s/d Lulus)</h3>
+          <p class="text-xs text-slate-500">Format resmi rekapitulasi kumulatif multi-semester BAAK yang berbeda dengan KRS semesteran mahasiswa.</p>
+        </div>
+        <button type="button" onclick="closeAdminPrintKrsModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Controls: Student Selector & Quick Filter -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shrink-0 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex-1">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Mahasiswa:</label>
+            <select id="admin-print-krs-student-select" onchange="previewAdminKrsHistory(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          <div class="sm:self-end">
+            <button type="button" onclick="executeCurrentAdminPrint()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>Cetak Sekarang (PDF)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1.5 text-xs">
+          <span class="text-[11px] font-bold text-slate-500">Pilih Cepat Mahasiswa:</span>
+          <button type="button" onclick="selectAdminPrintStudent('2020101088')" class="px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-[11px] transition">
+            🎓 Dimas Arya (Lulus - Sem 1 s/d 8)
+          </button>
+          <button type="button" onclick="selectAdminPrintStudent('2020101090')" class="px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-[11px] transition">
+            🎓 Nabila Putri (Lulus - Sem 1 s/d 8)
+          </button>
+          <button type="button" onclick="selectAdminPrintStudent('2024101001')" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold text-[11px] transition">
+            Budi Pratama (Aktif - Sem 5)
+          </button>
+          <button type="button" onclick="selectAdminPrintStudent('2024101002')" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold text-[11px] transition">
+            Siti Nur Aminah (Aktif - Sem 3)
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Window -->
+      <div class="flex-1 overflow-y-auto border border-slate-200 rounded-2xl p-4 bg-slate-100/70">
+        <div id="admin-print-krs-preview-container" class="bg-white p-6 sm:p-8 rounded-xl shadow-sm border border-slate-200 min-h-[300px]">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between shrink-0">
+        <p class="text-xs text-slate-400">
+          <i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i>
+          Dokumen BAAK resmi memuat rekapitulasi lengkap seluruh semester, legalisasi pimpinan, dan stempel dinas.
+        </p>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeAdminPrintKrsModal()" class="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Tutup
+          </button>
+          <button type="button" onclick="executeCurrentAdminPrint()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Cetak Dokumen BAAK Resmi (PDF)</span>
           </button>
         </div>
       </div>

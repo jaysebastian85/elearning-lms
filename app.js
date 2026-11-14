@@ -161,6 +161,46 @@ const DEFAULT_STUDENTS = [
     status: "Aktif",
     dosenPa: "Maya Kusuma, S.Kom., M.Cs.",
     avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80"
+  },
+  {
+    nim: "2020101088",
+    name: "Dimas Arya Wijaya, S.Kom.",
+    email: "dimas.arya@alumni.univ-nusantara.ac.id",
+    prodi: "S1 Teknik Informatika",
+    semester: 8,
+    ipk: 3.86,
+    sksLulus: 144,
+    status: "Lulus",
+    thnLulus: "2024",
+    tglYudisium: "18 Agustus 2024",
+    noIjazah: "UN-TI-2024-008129",
+    noSkYudisium: "SK.045/YUD/FIK/2024",
+    predikat: "Dengan Pujian (Magna Cum Laude)",
+    judulSkripsi: "Rancang Bangun Sistem Deteksi Intrusi Jaringan Berbasis Deep Learning dan Algoritma Genetika",
+    dosenPa: "Dr. Ir. Hendra Setiawan, M.T.",
+    pembimbing1: "Dr. Ir. Hendra Setiawan, M.T.",
+    pembimbing2: "Maya Kusuma, S.Kom., M.Cs.",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+  },
+  {
+    nim: "2020101090",
+    name: "Nabila Putri Rahmadani, S.Kom.",
+    email: "nabila.putri@alumni.univ-nusantara.ac.id",
+    prodi: "S1 Sistem Informasi",
+    semester: 8,
+    ipk: 3.92,
+    sksLulus: 144,
+    status: "Lulus",
+    thnLulus: "2024",
+    tglYudisium: "22 September 2024",
+    noIjazah: "UN-SI-2024-004118",
+    noSkYudisium: "SK.052/YUD/FIK/2024",
+    predikat: "Dengan Pujian (Summa Cum Laude)",
+    judulSkripsi: "Evaluasi Penerimaan Sistem Enterprise Resource Planning (ERP) Menggunakan Kerangka Kerja UTAUT2 dan Analisis PLS-SEM",
+    dosenPa: "Maya Kusuma, S.Kom., M.Cs.",
+    pembimbing1: "Maya Kusuma, S.Kom., M.Cs.",
+    pembimbing2: "Dr. Ir. Hendra Setiawan, M.T.",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80"
   }
 ];
 
@@ -529,7 +569,7 @@ let state = {
 };
 
 const ROLE_PERMISSIONS = {
-  mahasiswa: ['dashboard', 'courses', 'course-detail', 'attendance', 'krs', 'assignments', 'profile'],
+  mahasiswa: ['dashboard', 'courses', 'course-detail', 'attendance', 'krs', 'khs', 'assignments', 'profile'],
   dosen: ['dosen-dashboard', 'dosen-classes', 'dosen-attendance', 'dosen-assignments', 'dosen-grades', 'profile'],
   admin: ['admin-dashboard', 'admin-students', 'admin-lecturers', 'admin-courses', 'admin-classes', 'admin-krs', 'profile']
 };
@@ -579,7 +619,21 @@ function loadFromStorage() {
   state.assignments = savedAssignments ? JSON.parse(savedAssignments) : INITIAL_ASSIGNMENTS;
 
   const savedStudents = localStorage.getItem(STORAGE_KEYS.STUDENTS);
-  state.students = savedStudents ? JSON.parse(savedStudents) : DEFAULT_STUDENTS;
+  if (savedStudents) {
+    try {
+      const parsed = JSON.parse(savedStudents);
+      DEFAULT_STUDENTS.forEach(ds => {
+        if (!parsed.some(s => s.nim === ds.nim)) {
+          parsed.push(ds);
+        }
+      });
+      state.students = parsed;
+    } catch(e) {
+      state.students = [...DEFAULT_STUDENTS];
+    }
+  } else {
+    state.students = [...DEFAULT_STUDENTS];
+  }
 
   const savedLecturers = localStorage.getItem(STORAGE_KEYS.LECTURERS);
   state.lecturers = savedLecturers ? JSON.parse(savedLecturers) : DEFAULT_LECTURERS;
@@ -904,6 +958,9 @@ function navigate(tabId, param = null) {
       break;
     case 'krs':
       renderKrsSection();
+      break;
+    case 'khs':
+      renderKhsSection();
       break;
     case 'assignments':
       renderAssignmentsSection();
@@ -2758,33 +2815,46 @@ function toggleKrsPeriod() {
 function renderAdminStudents() {
   const searchInput = document.getElementById('admin-student-search');
   const prodiFilter = document.getElementById('admin-student-prodi-filter');
+  const statusFilter = document.getElementById('admin-student-status-filter');
   const query = (searchInput ? searchInput.value : '').toLowerCase();
   const prodi = prodiFilter ? prodiFilter.value : 'ALL';
+  const statusVal = statusFilter ? statusFilter.value : 'ALL';
 
   const students = (state.students || DEFAULT_STUDENTS).filter(s => {
     const matchQ = s.name.toLowerCase().includes(query) || s.nim.toLowerCase().includes(query);
     const matchP = prodi === 'ALL' || s.prodi === prodi;
-    return matchQ && matchP;
+    const matchS = statusVal === 'ALL' || (s.status || 'Aktif') === statusVal;
+    return matchQ && matchP && matchS;
   });
 
   const tbody = document.getElementById('admin-students-table-body');
   if (tbody) {
-    tbody.innerHTML = students.map((s, idx) => `
-      <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs">
+    tbody.innerHTML = students.map((s, idx) => {
+      const isLulus = s.status === 'Lulus';
+      return `
+      <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs ${isLulus ? 'bg-purple-50/30' : ''}">
         <td class="py-3 px-4 text-center font-mono text-slate-400">${idx + 1}</td>
         <td class="py-3 px-4 font-mono font-bold text-slate-800">${s.nim}</td>
-        <td class="py-3 px-4 font-bold text-slate-800">${s.name}</td>
+        <td class="py-3 px-4 font-bold text-slate-800">
+          <div class="flex items-center gap-1.5">
+            <span>${s.name}</span>
+            ${isLulus ? '<span class="text-[10px] text-purple-600 font-bold" title="Alumni Lulus">🎓</span>' : ''}
+          </div>
+        </td>
         <td class="py-3 px-4 text-slate-600">${s.prodi}</td>
-        <td class="py-3 px-4 text-center font-semibold text-slate-700">Sem ${s.semester}</td>
+        <td class="py-3 px-4 text-center font-semibold text-slate-700">${isLulus ? 'Alumni' : 'Sem ' + s.semester}</td>
         <td class="py-3 px-4 text-center font-black text-emerald-600">${typeof s.ipk === 'number' ? s.ipk.toFixed(2) : s.ipk}</td>
-        <td class="py-3 px-4 text-center text-slate-700">${s.sksLulus || 88}</td>
+        <td class="py-3 px-4 text-center text-slate-700 font-bold">${s.sksLulus || 88}</td>
         <td class="py-3 px-4 text-center">
-          <button onclick="toggleStudentStatus('${s.nim}')" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${s.status === 'Aktif' ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'} transition">
+          <button onclick="toggleStudentStatus('${s.nim}')" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${isLulus ? 'bg-purple-100 text-purple-800 border border-purple-200' : (s.status === 'Aktif' ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300')} transition">
             ${s.status || 'Aktif'}
           </button>
         </td>
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5">
+            <button onclick="openAdminPrintKrsModal('${s.nim}')" class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition" title="Cetak Riwayat KRS & Kemajuan Studi BAAK (Sem 1 - Lulus)">
+              <i data-lucide="printer" class="w-4 h-4"></i>
+            </button>
             <button onclick="openStudentModal('${s.nim}')" class="p-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 transition" title="Edit Mahasiswa">
               <i data-lucide="edit-3" class="w-4 h-4"></i>
             </button>
@@ -2794,7 +2864,7 @@ function renderAdminStudents() {
           </div>
         </td>
       </tr>
-    `).join('');
+    `}).join('');
   }
   if (window.lucide) lucide.createIcons();
 }
@@ -3820,6 +3890,653 @@ function setupLiveTime() {
 function toggleNotifications() {
   const dropdown = document.getElementById('notifications-dropdown');
   if (dropdown) dropdown.classList.toggle('hidden');
+}
+
+// ==========================================
+// 10. ACADEMIC HISTORIES & KHS / TRANSCRIPT ENGINE
+// ==========================================
+
+function getStudentCompleteAcademicHistory(nimQuery) {
+  const allStudents = (state.students && state.students.length) ? state.students : DEFAULT_STUDENTS;
+  const s = allStudents.find(x => x.nim === nimQuery) || DEFAULT_STUDENTS.find(x => x.nim === nimQuery) || state.currentUser || DEFAULT_STUDENTS[0];
+  const isGraduated = s.status === 'Lulus' || s.semester >= 8;
+  const maxSem = isGraduated ? 8 : (s.semester || 5);
+
+  const semTemplates = [
+    {
+      sem: 1,
+      name: "Semester 1",
+      year: "2022/2023 Ganjil",
+      courses: [
+        { code: "IF101", name: "Algoritma & Pemrograman I", sks: 4, scoreNum: 92, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF102", name: "Kalkulus I", sks: 3, scoreNum: 86, grade: "A", weight: 4.0, lecturer: "Dra. Sri Wahyuni, M.Si." },
+        { code: "IF103", name: "Matematika Diskrit", sks: 3, scoreNum: 88, grade: "A", weight: 4.0, lecturer: "Prof. Dr. Ir. H. Suryo Broto, M.Eng." },
+        { code: "IF104", name: "Pengantar Teknologi Informasi", sks: 2, scoreNum: 95, grade: "A", weight: 4.0, lecturer: "Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF105", name: "Dasar Sistem Komputer", sks: 3, scoreNum: 82, grade: "B+", weight: 3.5, lecturer: "Ir. Gunawan Santoso, M.T." },
+        { code: "KU101", name: "Bahasa Inggris Akademik", sks: 2, scoreNum: 90, grade: "A", weight: 4.0, lecturer: "Sarah Jenkins, M.Ed." },
+        { code: "KU102", name: "Pendidikan Pancasila", sks: 2, scoreNum: 94, grade: "A", weight: 4.0, lecturer: "Drs. H. Mulyadi, M.Hum." }
+      ]
+    },
+    {
+      sem: 2,
+      name: "Semester 2",
+      year: "2022/2023 Genap",
+      courses: [
+        { code: "IF201", name: "Struktur Data & Algoritma", sks: 4, scoreNum: 90, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF202", name: "Kalkulus II", sks: 3, scoreNum: 81, grade: "B+", weight: 3.5, lecturer: "Dra. Sri Wahyuni, M.Si." },
+        { code: "IF203", name: "Pemrograman Berorientasi Objek (OOP)", sks: 3, scoreNum: 94, grade: "A", weight: 4.0, lecturer: "Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF204", name: "Arsitektur & Organisasi Komputer", sks: 3, scoreNum: 85, grade: "A", weight: 4.0, lecturer: "Ir. Gunawan Santoso, M.T." },
+        { code: "IF205", name: "Aljabar Linier & Matriks", sks: 3, scoreNum: 80, grade: "B+", weight: 3.5, lecturer: "Dr. Wahyu Wibowo, S.Si., M.Sc." },
+        { code: "KU201", name: "Pendidikan Kewarganegaraan", sks: 2, scoreNum: 92, grade: "A", weight: 4.0, lecturer: "Drs. H. Mulyadi, M.Hum." },
+        { code: "KU202", name: "Komunikasi Bisnis & Interpersonal", sks: 2, scoreNum: 91, grade: "A", weight: 4.0, lecturer: "Dra. Hj. Ratna Sari, M.M." }
+      ]
+    },
+    {
+      sem: 3,
+      name: "Semester 3",
+      year: "2023/2024 Ganjil",
+      courses: [
+        { code: "IF301", name: "Sistem Basis Data Terdistribusi", sks: 4, scoreNum: 93, grade: "A", weight: 4.0, lecturer: "Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF302", name: "Pemrograman Web Dasar", sks: 3, scoreNum: 95, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF303", name: "Probabilitas & Statistika Terapan", sks: 3, scoreNum: 88, grade: "A", weight: 4.0, lecturer: "Dr. Wahyu Wibowo, S.Si., M.Sc." },
+        { code: "IF304", name: "Rekayasa Perangkat Lunak (RPL)", sks: 3, scoreNum: 84, grade: "B+", weight: 3.5, lecturer: "Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF305", name: "Jaringan Komputer & Protokol", sks: 3, scoreNum: 89, grade: "A", weight: 4.0, lecturer: "Reza Pratama, M.T., CEH" },
+        { code: "IF306", name: "Sistem Operasi Komputer", sks: 3, scoreNum: 83, grade: "B+", weight: 3.5, lecturer: "Ir. Gunawan Santoso, M.T." }
+      ]
+    },
+    {
+      sem: 4,
+      name: "Semester 4",
+      year: "2023/2024 Genap",
+      courses: [
+        { code: "IF401", name: "Pemrograman Web Lanjut (Fullstack)", sks: 4, scoreNum: 96, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF402", name: "Basis Data Lanjut (NoSQL & Data Warehouse)", sks: 3, scoreNum: 91, grade: "A", weight: 4.0, lecturer: "Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF403", name: "Teori Bahasa & Otomata", sks: 3, scoreNum: 82, grade: "B+", weight: 3.5, lecturer: "Prof. Dr. Ir. H. Suryo Broto, M.Eng." },
+        { code: "IF404", name: "Interaksi Manusia & Komputer (UI/UX)", sks: 3, scoreNum: 94, grade: "A", weight: 4.0, lecturer: "Jessica Amanda, M.Ds." },
+        { code: "IF405", name: "Kecerdasan Buatan (Artificial Intelligence)", sks: 3, scoreNum: 89, grade: "A", weight: 4.0, lecturer: "Prof. Bambang Suryono, Ph.D." },
+        { code: "IF406", name: "Analisis & Perancangan Algoritma", sks: 3, scoreNum: 87, grade: "A", weight: 4.0, lecturer: "Dr. Wahyu Wibowo, S.Si., M.Sc." }
+      ]
+    },
+    {
+      sem: 5,
+      name: "Semester 5",
+      year: "2024/2025 Ganjil",
+      courses: [
+        { code: "IF501", name: "Machine Learning & Sains Data", sks: 3, scoreNum: 94, grade: "A", weight: 4.0, lecturer: "Prof. Bambang Suryono, Ph.D." },
+        { code: "IF502", name: "Pengembangan Aplikasi Mobile (Flutter)", sks: 4, scoreNum: 95, grade: "A", weight: 4.0, lecturer: "Anugrah Perkasa, M.Kom." },
+        { code: "IF503", name: "Keamanan Jaringan & Cyber Security", sks: 3, scoreNum: 92, grade: "A", weight: 4.0, lecturer: "Reza Pratama, M.T., CEH" },
+        { code: "IF504", name: "Cloud Computing & DevOps Architecture", sks: 3, scoreNum: 85, grade: "A", weight: 4.0, lecturer: "David Kurniawan, M.T." },
+        { code: "IF505", name: "Manajemen Proyek Teknologi Informasi", sks: 3, scoreNum: 88, grade: "A", weight: 4.0, lecturer: "Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF506", name: "Metodologi Penelitian Bidang Komputer", sks: 2, scoreNum: 90, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." }
+      ]
+    },
+    {
+      sem: 6,
+      name: "Semester 6",
+      year: "2024/2025 Genap",
+      courses: [
+        { code: "IF601", name: "Pemrosesan Bahasa Alami (NLP)", sks: 3, scoreNum: 93, grade: "A", weight: 4.0, lecturer: "Prof. Bambang Suryono, Ph.D." },
+        { code: "IF602", name: "Internet of Things (IoT) & Smart Devices", sks: 3, scoreNum: 91, grade: "A", weight: 4.0, lecturer: "Ir. Gunawan Santoso, M.T." },
+        { code: "IF603", name: "Sistem Terdistribusi & Microservices", sks: 3, scoreNum: 86, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF604", name: "Etika Profesi & Hukum Siber", sks: 2, scoreNum: 95, grade: "A", weight: 4.0, lecturer: "Dra. Hj. Ratna Sari, M.M." },
+        { code: "IF605", name: "Praktik Kerja Lapangan / Magang Industri (PKL)", sks: 4, scoreNum: 98, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF606", name: "Kewirausahaan Digital (Technopreneurship)", sks: 3, scoreNum: 90, grade: "A", weight: 4.0, lecturer: "David Kurniawan, M.T." }
+      ]
+    },
+    {
+      sem: 7,
+      name: "Semester 7",
+      year: "2025/2026 Ganjil",
+      courses: [
+        { code: "IF701", name: "Deep Learning & Computer Vision", sks: 3, scoreNum: 94, grade: "A", weight: 4.0, lecturer: "Prof. Bambang Suryono, Ph.D." },
+        { code: "IF702", name: "Seminar Proposal Skripsi", sks: 3, scoreNum: 96, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T." },
+        { code: "IF703", name: "Kuliah Kerja Nyata (KKN Tematik Digital)", sks: 3, scoreNum: 95, grade: "A", weight: 4.0, lecturer: "Tim Pengabdian Masyarakat" },
+        { code: "IF704", name: "Arsitektur Big Data & Analytics", sks: 3, scoreNum: 91, grade: "A", weight: 4.0, lecturer: "Dr. Wahyu Wibowo, S.Si., M.Sc." },
+        { code: "IF705", name: "Komputasi Awan Lanjut & Kubernetes", sks: 4, scoreNum: 88, grade: "A", weight: 4.0, lecturer: "David Kurniawan, M.T." }
+      ]
+    },
+    {
+      sem: 8,
+      name: "Semester 8",
+      year: "2025/2026 Genap",
+      courses: [
+        { code: "IF801", name: "Skripsi / Tugas Akhir Mandiri", sks: 6, scoreNum: 97, grade: "A", weight: 4.0, lecturer: "Dr. Ir. Hendra Setiawan, M.T. & Maya Kusuma, S.Kom., M.Cs." },
+        { code: "IF802", name: "Sidang Ujian Komprehensif", sks: 2, scoreNum: 95, grade: "A", weight: 4.0, lecturer: "Dewan Penguji Akademik" },
+        { code: "IF803", name: "Publikasi Ilmiah Bereputasi Nasional", sks: 3, scoreNum: 94, grade: "A", weight: 4.0, lecturer: "Dr. Wahyu Wibowo, S.Si., M.Sc." },
+        { code: "IF804", name: "Pembekalan Karir & Soft Skills Industri", sks: 4, scoreNum: 98, grade: "A", weight: 4.0, lecturer: "Pusat Karir & Alumni UNT" }
+      ]
+    }
+  ];
+
+  let cumulativeSks = 0;
+  let cumulativeMutu = 0;
+
+  const semesters = semTemplates.slice(0, maxSem).map(st => {
+    let semSks = 0;
+    let semMutu = 0;
+    const courses = st.courses.map(c => {
+      const mutu = c.sks * c.weight;
+      semSks += c.sks;
+      semMutu += mutu;
+      return {
+        ...c,
+        mutu: mutu,
+        status: "Lulus"
+      };
+    });
+
+    cumulativeSks += semSks;
+    cumulativeMutu += semMutu;
+    const ips = semMutu / semSks;
+    const ipk = cumulativeMutu / cumulativeSks;
+
+    return {
+      semester: st.sem,
+      name: st.name,
+      academicYear: st.year,
+      sksSemester: semSks,
+      mutuSemester: semMutu,
+      ips: Number(ips.toFixed(2)),
+      sksKumulatif: cumulativeSks,
+      mutuKumulatif: cumulativeMutu,
+      ipk: Number(ipk.toFixed(2)),
+      courses: courses
+    };
+  });
+
+  const finalIpk = semesters.length ? semesters[semesters.length - 1].ipk : (s.ipk || 3.84);
+  const finalSks = semesters.length ? semesters[semesters.length - 1].sksKumulatif : (s.sksLulus || 88);
+
+  return {
+    nim: s.nim,
+    name: s.name,
+    prodi: s.prodi,
+    fakultas: "Fakultas Ilmu Komputer",
+    jenjang: "S1 (Sarjana Komputer)",
+    status: s.status || "Aktif",
+    semester: s.semester,
+    angkatan: s.nim.startsWith("2020") ? "2020" : "2024",
+    ttl: s.nim === '2020101088' ? "Surabaya, 14 Mei 2002" : (s.nim === '2020101090' ? "Bandung, 28 Juli 2002" : "Jakarta, 12 Agustus 2003"),
+    nik: `317105${s.nim.slice(-6)}0001`,
+    arsipNo: `BAAK/REKAP-KRS/${s.nim.slice(-4)}/2026/XI`,
+    dosenPa: s.dosenPa || "Dr. Ir. Hendra Setiawan, M.T.",
+    thnLulus: s.thnLulus || (isGraduated ? "2024" : "-"),
+    tglYudisium: s.tglYudisium || (isGraduated ? "18 Agustus 2024" : "-"),
+    noIjazah: s.noIjazah || (isGraduated ? `UN-TI-2024-00${s.nim.slice(-4)}` : "-"),
+    noSkYudisium: s.noSkYudisium || (isGraduated ? "SK.045/YUD/FIK/2024" : "-"),
+    predikat: s.predikat || (isGraduated ? (finalIpk >= 3.80 ? "Dengan Pujian (Magna Cum Laude)" : "Sangat Memuaskan") : "Sangat Memuaskan"),
+    judulSkripsi: s.judulSkripsi || (isGraduated ? "Rancang Bangun Sistem Deteksi Intrusi Jaringan Berbasis Deep Learning dan Algoritma Genetika" : "-"),
+    pembimbing1: s.pembimbing1 || s.dosenPa || "Dr. Ir. Hendra Setiawan, M.T.",
+    pembimbing2: s.pembimbing2 || "Maya Kusuma, S.Kom., M.Cs.",
+    totalSks: finalSks,
+    totalMutu: cumulativeMutu,
+    ipk: finalIpk,
+    semesters: semesters
+  };
+}
+
+let currentKhsSemester = null;
+
+function renderKhsSection(selectedSemester = null) {
+  const user = state.currentUser;
+  if (!user) return;
+
+  const history = getStudentCompleteAcademicHistory(user.nim);
+  if (!history || !history.semesters.length) return;
+
+  if (!selectedSemester) {
+    selectedSemester = history.semesters[history.semesters.length - 1].semester;
+  }
+  currentKhsSemester = Number(selectedSemester);
+
+  const semData = history.semesters.find(s => s.semester === currentKhsSemester) || history.semesters[history.semesters.length - 1];
+
+  // Populate semester select
+  const selectEl = document.getElementById('khs-semester-select');
+  if (selectEl) {
+    selectEl.innerHTML = history.semesters.map(s => `
+      <option value="${s.semester}" ${s.semester === currentKhsSemester ? 'selected' : ''}>
+        Semester ${s.semester} (${s.academicYear})
+      </option>
+    `).join('');
+  }
+
+  // Update Student Header
+  const nameEl = document.getElementById('khs-student-name');
+  if (nameEl) nameEl.textContent = user.name;
+  const nimEl = document.getElementById('khs-student-nim');
+  if (nimEl) nimEl.textContent = user.nim;
+  const prodiEl = document.getElementById('khs-student-prodi');
+  if (prodiEl) prodiEl.textContent = user.prodi;
+  const dosenEl = document.getElementById('khs-student-dosen');
+  if (dosenEl) dosenEl.textContent = user.dosenPa || history.dosenPa;
+
+  const semLabel = document.getElementById('khs-active-semester-label');
+  if (semLabel) semLabel.textContent = `Semester ${semData.semester} (${semData.academicYear})`;
+
+  // Stats
+  const statIps = document.getElementById('khs-stat-ips');
+  if (statIps) statIps.textContent = semData.ips.toFixed(2);
+  const statIpk = document.getElementById('khs-stat-ipk');
+  if (statIpk) statIpk.textContent = semData.ipk.toFixed(2);
+  const statSks = document.getElementById('khs-stat-sks-sem');
+  if (statSks) statSks.textContent = `${semData.sksSemester} SKS`;
+
+  // Table Body
+  const tbody = document.getElementById('khs-grades-table-body');
+  if (tbody) {
+    tbody.innerHTML = semData.courses.map((c, idx) => `
+      <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs">
+        <td class="py-3 px-3 text-center text-slate-400 font-mono">${idx + 1}</td>
+        <td class="py-3 px-3 font-mono font-bold text-indigo-700">${c.code}</td>
+        <td class="py-3 px-3 font-bold text-slate-800">${c.name}</td>
+        <td class="py-3 px-3 text-center font-bold text-slate-700">${c.sks}</td>
+        <td class="py-3 px-3 text-center font-semibold text-slate-800">${c.scoreNum}</td>
+        <td class="py-3 px-3 text-center font-black ${c.grade === 'A' ? 'text-emerald-600' : 'text-indigo-600'}">${c.grade}</td>
+        <td class="py-3 px-3 text-center font-mono text-slate-600">${c.weight.toFixed(1)}</td>
+        <td class="py-3 px-3 text-center font-mono font-bold text-slate-800">${c.mutu.toFixed(1)}</td>
+        <td class="py-3 px-3 text-slate-500 text-[11px]">${c.lecturer}</td>
+        <td class="py-3 px-3 text-center">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+            ${c.status}
+          </span>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Footer Totals
+  const footSks = document.getElementById('khs-foot-total-sks');
+  if (footSks) footSks.textContent = `${semData.sksSemester} SKS`;
+  const footMutu = document.getElementById('khs-foot-total-mutu');
+  if (footMutu) footMutu.textContent = semData.mutuSemester.toFixed(1);
+  const footIps = document.getElementById('khs-foot-ips-label');
+  if (footIps) footIps.textContent = `IP Semester (IPS): ${semData.ips.toFixed(2)}`;
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function changeKhsSemester(sem) {
+  renderKhsSection(Number(sem));
+}
+
+function printKhsDocument(targetSemester = null) {
+  const user = state.currentUser;
+  if (!user) return;
+
+  const history = getStudentCompleteAcademicHistory(user.nim);
+  const semNum = targetSemester ? Number(targetSemester) : (currentKhsSemester || history.semesters[history.semesters.length - 1].semester);
+  const semData = history.semesters.find(s => s.semester === semNum) || history.semesters[history.semesters.length - 1];
+
+  const printArea = document.getElementById('print-area');
+  if (printArea) {
+    printArea.innerHTML = `
+      <div class="max-w-4xl mx-auto p-8 border border-slate-300 rounded-lg text-slate-800 bg-white">
+        <!-- Letterhead -->
+        <div class="flex items-center gap-4 pb-4 border-b-2 border-slate-900 mb-6">
+          <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white font-black text-2xl flex items-center justify-center shrink-0">
+            UN
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl font-black uppercase tracking-wider text-slate-900">UNIVERSITAS NUSANTARA TEKNOLOGI</h2>
+            <p class="text-xs text-slate-600 font-semibold uppercase tracking-wide">FAKULTAS ILMU KOMPUTER • PROGRAM STUDI ${user.prodi.toUpperCase()}</p>
+            <p class="text-xs text-slate-500">Jl. Jenderal Sudirman Kav. 45-46, Jakarta Selatan • Telp: (021) 555-0199 • www.univ-nusantara.ac.id</p>
+          </div>
+        </div>
+
+        <h3 class="text-center font-black text-lg uppercase tracking-wide underline underline-offset-4 mb-2">
+          KARTU HASIL STUDI (KHS)
+        </h3>
+        <p class="text-center text-xs font-bold text-slate-600 uppercase mb-6">
+          ${semData.name.toUpperCase()} • TAHUN AKADEMIK ${semData.academicYear}
+        </p>
+
+        <!-- Student Details -->
+        <div class="grid grid-cols-2 gap-4 text-xs mb-6 bg-slate-50 p-4 rounded border border-slate-200">
+          <div>
+            <p><span class="w-32 inline-block font-bold">Nama Mahasiswa</span>: ${user.name}</p>
+            <p><span class="w-32 inline-block font-bold">Nomor Induk (NIM)</span>: ${user.nim}</p>
+            <p><span class="w-32 inline-block font-bold">Program Studi</span>: ${user.prodi}</p>
+            <p><span class="w-32 inline-block font-bold">Jenjang Pendidikan</span>: S1 (Sarjana)</p>
+          </div>
+          <div>
+            <p><span class="w-32 inline-block font-bold">Semester</span>: ${semData.semester} (${semData.academicYear})</p>
+            <p><span class="w-32 inline-block font-bold">IP Semester (IPS)</span>: <span class="font-bold text-indigo-700">${semData.ips.toFixed(2)}</span></p>
+            <p><span class="w-32 inline-block font-bold">IP Kumulatif (IPK)</span>: <span class="font-bold text-emerald-700">${semData.ipk.toFixed(2)}</span></p>
+            <p><span class="w-32 inline-block font-bold">Dosen Pembimbing PA</span>: ${user.dosenPa || history.dosenPa}</p>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <table class="w-full text-xs border border-slate-300 mb-6">
+          <thead class="bg-slate-100 font-bold border-b border-slate-300">
+            <tr>
+              <th class="p-2 border-r border-slate-300 w-8 text-center">No</th>
+              <th class="p-2 border-r border-slate-300 text-left w-20">Kode MK</th>
+              <th class="p-2 border-r border-slate-300 text-left">Nama Mata Kuliah</th>
+              <th class="p-2 border-r border-slate-300 text-center w-12">SKS</th>
+              <th class="p-2 border-r border-slate-300 text-center w-16">Nilai Huruf</th>
+              <th class="p-2 border-r border-slate-300 text-center w-14">Bobot</th>
+              <th class="p-2 border-r border-slate-300 text-center w-16">Mutu (KxN)</th>
+              <th class="p-2 text-center w-20">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${semData.courses.map((c, i) => `
+              <tr class="border-b border-slate-200">
+                <td class="p-2 border-r border-slate-300 text-center">${i + 1}</td>
+                <td class="p-2 border-r border-slate-300 font-mono font-bold">${c.code}</td>
+                <td class="p-2 border-r border-slate-300 font-semibold">${c.name}</td>
+                <td class="p-2 border-r border-slate-300 text-center font-bold">${c.sks}</td>
+                <td class="p-2 border-r border-slate-300 text-center font-bold text-indigo-700">${c.grade}</td>
+                <td class="p-2 border-r border-slate-300 text-center font-mono">${c.weight.toFixed(1)}</td>
+                <td class="p-2 border-r border-slate-300 text-center font-mono font-bold">${c.mutu.toFixed(1)}</td>
+                <td class="p-2 text-center font-bold text-emerald-700">${c.status}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot class="bg-slate-50 font-bold border-t-2 border-slate-300 text-xs">
+            <tr>
+              <td colspan="3" class="p-2 text-right border-r border-slate-300">JUMLAH BEBAN SEMESTER INI:</td>
+              <td class="p-2 text-center border-r border-slate-300 text-indigo-700">${semData.sksSemester}</td>
+              <td colspan="2" class="p-2 text-right border-r border-slate-300">TOTAL NILAI MUTU:</td>
+              <td class="p-2 text-center border-r border-slate-300 text-indigo-700">${semData.mutuSemester.toFixed(1)}</td>
+              <td class="p-2 text-center"></td>
+            </tr>
+            <tr class="bg-slate-100/70 border-t border-slate-200">
+              <td colspan="8" class="p-3 text-slate-700">
+                <div class="flex items-center justify-between">
+                  <span><strong>Indeks Prestasi Semester (IPS)</strong>: ${semData.ips.toFixed(2)}</span>
+                  <span><strong>Total SKS Kumulatif</strong>: ${semData.sksKumulatif} SKS</span>
+                  <span><strong>Indeks Prestasi Kumulatif (IPK)</strong>: ${semData.ipk.toFixed(2)}</span>
+                  <span><strong>Maks. Beban SKS Semester Berikutnya</strong>: 24 SKS</span>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Signatures -->
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-10 pt-4">
+          <div>
+            <p>Mengetahui,</p>
+            <p class="font-bold">Dosen Pembimbing Akademik</p>
+            <div class="h-16 flex items-center justify-center">
+              <span class="text-[10px] text-emerald-600 font-mono border border-emerald-500 px-2.5 py-0.5 rounded bg-emerald-50">DIGITALLY SIGNED & VERIFIED</span>
+            </div>
+            <p class="font-bold underline">${user.dosenPa || history.dosenPa}</p>
+            <p class="text-slate-500">NIDN. 0012057801</p>
+          </div>
+          <div>
+            <p>Jakarta, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <p class="font-bold">Ketua Program Studi ${user.prodi.replace('S1 ', '')}</p>
+            <div class="h-16 flex items-center justify-center">
+              <span class="text-[10px] text-indigo-600 font-mono border border-indigo-500 px-2.5 py-0.5 rounded bg-indigo-50">OFFICIAL FACULTY APPROVAL</span>
+            </div>
+            <p class="font-bold underline">Prof. Dr. Ir. H. Suryo Broto, M.Eng.</p>
+            <p class="text-slate-500">NIP. 19680315 199303 1 001</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    window.print();
+  }
+}
+
+// ==========================================
+// 11. ADMIN: BAAK MULTI-SEMESTER KRS / TRANSCRIPT PRINTING
+// ==========================================
+
+let adminSelectedPrintNim = '2020101088';
+
+function openAdminPrintKrsModal(nim = null) {
+  const students = state.students || DEFAULT_STUDENTS;
+  const select = document.getElementById('admin-print-krs-student-select');
+  
+  if (select) {
+    select.innerHTML = students.map(s => {
+      const isLulus = s.status === 'Lulus';
+      return `<option value="${s.nim}">[${isLulus ? 'LULUS 🎓' : 'AKTIF'}] ${s.name} (${s.nim} - ${s.prodi})</option>`;
+    }).join('');
+  }
+
+  adminSelectedPrintNim = nim || (students.find(x => x.status === 'Lulus') || students[0]).nim;
+  if (select) select.value = adminSelectedPrintNim;
+
+  previewAdminKrsHistory(adminSelectedPrintNim);
+
+  const modal = document.getElementById('modal-admin-preview-krs-history');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function closeAdminPrintKrsModal() {
+  const modal = document.getElementById('modal-admin-preview-krs-history');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function selectAdminPrintStudent(nim) {
+  adminSelectedPrintNim = nim;
+  const select = document.getElementById('admin-print-krs-student-select');
+  if (select) select.value = nim;
+  previewAdminKrsHistory(nim);
+}
+
+function previewAdminKrsHistory(nim) {
+  adminSelectedPrintNim = nim;
+  const container = document.getElementById('admin-print-krs-preview-container');
+  if (!container) return;
+
+  const docHtml = generateAdminCompleteHistoryHtml(nim);
+  container.innerHTML = docHtml;
+}
+
+function executeCurrentAdminPrint() {
+  printAdminStudentCompleteHistory(adminSelectedPrintNim);
+}
+
+function generateAdminCompleteHistoryHtml(nim) {
+  const history = getStudentCompleteAcademicHistory(nim);
+  const isLulus = history.status === 'Lulus';
+
+  // Split semesters into left (odd) and right (even) columns for compact official BAAK matrix
+  const leftSems = history.semesters.filter(s => s.semester % 2 !== 0);
+  const rightSems = history.semesters.filter(s => s.semester % 2 === 0);
+
+  function renderSemesterBlock(sem) {
+    return `
+      <div class="mb-4 border border-slate-300 rounded overflow-hidden page-break-avoid">
+        <div class="bg-slate-100 px-3 py-1.5 border-b border-slate-300 flex items-center justify-between font-bold text-[11px] text-slate-800">
+          <span>${sem.name.toUpperCase()} (${sem.academicYear})</span>
+          <span class="text-indigo-900 font-mono">${sem.sksSemester} SKS • IPS: ${sem.ips.toFixed(2)}</span>
+        </div>
+        <table class="w-full text-[10px] border-collapse">
+          <thead>
+            <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold text-left">
+              <th class="py-1 px-1.5 w-6 text-center">No</th>
+              <th class="py-1 px-1.5 w-16">Kode</th>
+              <th class="py-1 px-1.5">Mata Kuliah</th>
+              <th class="py-1 px-1.5 text-center w-8">SKS</th>
+              <th class="py-1 px-1.5 text-center w-8">Nilai</th>
+              <th class="py-1 px-1.5 text-center w-8">Mutu</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sem.courses.map((c, i) => `
+              <tr class="border-b border-slate-100">
+                <td class="py-1 px-1.5 text-center text-slate-400">${i + 1}</td>
+                <td class="py-1 px-1.5 font-mono font-bold text-slate-700">${c.code}</td>
+                <td class="py-1 px-1.5 font-medium text-slate-800">${c.name}</td>
+                <td class="py-1 px-1.5 text-center font-bold">${c.sks}</td>
+                <td class="py-1 px-1.5 text-center font-black ${c.grade === 'A' ? 'text-emerald-700' : 'text-indigo-700'}">${c.grade}</td>
+                <td class="py-1 px-1.5 text-center font-mono font-semibold">${c.mutu.toFixed(1)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="p-6 md:p-8 bg-white text-slate-900 max-w-4xl mx-auto border-2 border-slate-800 rounded-lg">
+      <!-- BAAK Central University Official Letterhead -->
+      <div class="border-b-4 border-double border-slate-900 pb-3 mb-5">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 rounded-2xl bg-slate-900 text-white font-black text-2xl flex items-center justify-center shrink-0 border-2 border-amber-400">
+            UN
+          </div>
+          <div class="flex-1 text-center">
+            <p class="text-[9px] font-bold tracking-widest uppercase text-slate-600">KEMENTERIAN PENDIDIKAN TINGGI, RISET, DAN TEKNOLOGI</p>
+            <h2 class="text-xl font-black uppercase tracking-wider text-slate-950">UNIVERSITAS NUSANTARA TEKNOLOGI</h2>
+            <h3 class="text-xs font-black uppercase tracking-widest text-indigo-900">BIRO ADMINISTRASI AKADEMIK & KEMAHASISWAAN (BAAK)</h3>
+            <p class="text-[10px] text-slate-500">Gedung Rektorat Lt. 2, Jl. Jenderal Sudirman Kav. 45-46 Jakarta Selatan • Telp: (021) 555-0199 • baak@univ-nusantara.ac.id</p>
+          </div>
+          <div class="w-28 text-right shrink-0">
+            <div class="border border-slate-400 p-1.5 rounded text-center bg-slate-50">
+              <span class="text-[8px] font-bold block text-slate-500">REGISTRASI BAAK</span>
+              <span class="text-[9px] font-mono font-bold text-slate-800">${history.arsipNo}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Document Title -->
+      <div class="text-center my-3 pb-2 border-b border-slate-200">
+        <h3 class="font-black text-base uppercase tracking-wider underline underline-offset-4 text-slate-900">
+          LEMBAR REKAPITULASI RESMI RIWAYAT RENCANA & KEMAJUAN STUDI MAHASISWA
+        </h3>
+        <p class="text-[11px] font-bold text-slate-700 uppercase tracking-wide mt-1">
+          REKAPITULASI KRS & TRANSKRIP AKADEMIK KUMULATIF LENGKAP (${isLulus ? 'SEMESTER 1 S/D LULUS' : 'SEMESTER 1 S/D AKTIF'})
+        </p>
+      </div>
+
+      <!-- Official Academic Credentials Box -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs mb-5 bg-slate-50 p-4 rounded-lg border border-slate-300">
+        <div>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block">Nama Mahasiswa</span>
+          <p class="font-extrabold text-slate-900">${history.name}</p>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block mt-2">Nomor Induk (NIM)</span>
+          <p class="font-mono font-bold text-indigo-800">${history.nim}</p>
+        </div>
+        <div>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block">Program Studi</span>
+          <p class="font-bold text-slate-900">${history.prodi}</p>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block mt-2">Fakultas / Jenjang</span>
+          <p class="font-semibold text-slate-800">${history.fakultas} / ${history.jenjang}</p>
+        </div>
+        <div>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block">Status Kelulusan</span>
+          <p class="mt-0.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-black ${isLulus ? 'bg-purple-100 text-purple-900 border border-purple-300' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'}">
+              ${isLulus ? 'LULUS (ALUMNI)' : 'MAHASISWA AKTIF'}
+            </span>
+          </p>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block mt-2">Tanggal Yudisium</span>
+          <p class="font-semibold text-slate-800">${history.tglYudisium}</p>
+        </div>
+        <div>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block">No. Pokok Ijazah (PIN)</span>
+          <p class="font-mono font-bold text-slate-800">${history.noIjazah}</p>
+          <span class="text-[10px] text-slate-500 uppercase font-bold block mt-2">Predikat Kelulusan</span>
+          <p class="font-bold text-emerald-800">${history.predikat}</p>
+        </div>
+        ${isLulus ? `
+          <div class="col-span-2 sm:col-span-4 pt-2 border-t border-slate-200 mt-1">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block">Judul Skripsi / Tugas Akhir Mandiri:</span>
+            <p class="font-bold text-slate-900 italic text-[11px]">"${history.judulSkripsi}"</p>
+            <p class="text-[10px] text-slate-500 mt-0.5">Dosen Pembimbing I: <strong>${history.pembimbing1}</strong> • Pembimbing II: <strong>${history.pembimbing2}</strong></p>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Multi-Semester Matrix: 2-Column Grid of Semesters 1 to 8 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-wider text-indigo-900 mb-2 border-b-2 border-indigo-900 pb-0.5">
+            SEMESTER GANJIL (KOLOM I)
+          </p>
+          ${leftSems.map(renderSemesterBlock).join('')}
+        </div>
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-wider text-indigo-900 mb-2 border-b-2 border-indigo-900 pb-0.5">
+            SEMESTER GENAP (KOLOM II)
+          </p>
+          ${rightSems.map(renderSemesterBlock).join('')}
+        </div>
+      </div>
+
+      <!-- BAAK Official Cumulative Summary Footer -->
+      <div class="bg-slate-100 p-4 rounded-lg border-2 border-slate-400 mb-6 text-xs text-slate-900 page-break-avoid">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div>
+            <span class="text-[10px] font-bold text-slate-500 uppercase">Total SKS Diambil & Lulus</span>
+            <p class="text-base font-black text-slate-900 mt-0.5">${history.totalSks} SKS</p>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-slate-500 uppercase">Total Nilai Mutu</span>
+            <p class="text-base font-black text-slate-900 mt-0.5">${history.totalMutu.toFixed(1)}</p>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-slate-500 uppercase">IPK Kumulatif Akhir</span>
+            <p class="text-base font-black text-emerald-700 mt-0.5">${history.ipk.toFixed(2)}</p>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-slate-500 uppercase">Status Kelulusan</span>
+            <p class="text-xs font-black text-purple-900 mt-1">${history.predikat}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legalisasi & Stempel Resmi Tingkat Universitas / BAAK -->
+      <div class="grid grid-cols-3 gap-4 text-center text-xs pt-4 border-t-2 border-slate-900 page-break-avoid items-center">
+        <div>
+          <p class="text-[11px]">Mengesahkan,</p>
+          <p class="font-bold text-[11px]">Kepala Biro BAAK</p>
+          <div class="h-16 flex items-center justify-center">
+            <span class="text-[9px] text-indigo-700 font-mono border border-indigo-400 px-2 py-0.5 rounded bg-indigo-50">LEGALIZED BY BAAK</span>
+          </div>
+          <p class="font-bold underline text-[11px]">Bambang Sudarsono, S.Sos., M.M.</p>
+          <p class="text-[10px] text-slate-500">NIP. 19850412 201001 1 002</p>
+        </div>
+
+        <!-- Official Circular Stamp Watermark Seal -->
+        <div class="flex flex-col items-center justify-center">
+          <div class="official-stamp text-[8px] leading-tight p-1 shadow-inner">
+            <span class="text-[7px]">★ UNIVERSITAS ★</span>
+            <span class="text-[8px] font-black my-0.5">NUSANTARA</span>
+            <span class="text-[7px]">TEKNOLOGI</span>
+            <span class="text-[6px] font-mono mt-0.5 text-blue-900">BAAK PUSAT</span>
+          </div>
+          <span class="text-[9px] text-slate-500 font-semibold mt-1">CAP DINAS RESMI</span>
+        </div>
+
+        <div>
+          <p class="text-[11px]">Jakarta, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p class="font-bold text-[11px]">Wakil Rektor I Bidang Akademik</p>
+          <div class="h-16 flex items-center justify-center">
+            <span class="text-[9px] text-emerald-700 font-mono border border-emerald-400 px-2 py-0.5 rounded bg-emerald-50">VERIFIED DIKTI DATABASE</span>
+          </div>
+          <p class="font-bold underline text-[11px]">Prof. Dr. Ir. H. Suryo Broto, M.Eng.</p>
+          <p class="text-[10px] text-slate-500">NIP. 19680315 199303 1 001</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function printAdminStudentCompleteHistory(nim) {
+  const printArea = document.getElementById('print-area');
+  if (printArea) {
+    printArea.innerHTML = generateAdminCompleteHistoryHtml(nim);
+    window.print();
+  }
 }
 
 function toggleMobileMenu() {
