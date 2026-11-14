@@ -94,19 +94,19 @@
       <div id="login-card" class="lg:col-span-6 p-8 lg:p-12 bg-white flex flex-col justify-center">
         <div class="mb-6">
           <h3 class="text-2xl font-black text-slate-900 tracking-tight">Masuk ke Portal</h3>
-          <p class="text-xs text-slate-500 mt-1">Masukkan Nomor Induk Mahasiswa (NIM) dan kata sandi Anda.</p>
+          <p class="text-xs text-slate-500 mt-1">Masukkan NIM, NIDN, NIP, atau Username dan kata sandi Anda.</p>
         </div>
 
         <form id="login-form" class="space-y-4">
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="login-nim">
-              NIM / Email Mahasiswa
+              NIM / NIDN / NIP / Username
             </label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                 <i data-lucide="user" class="w-4 h-4"></i>
               </span>
-              <input type="text" id="login-nim" required value="2024101001" placeholder="Contoh: 2024101001"
+              <input type="text" id="login-nim" required value="2024101001" placeholder="Contoh: 2024101001 / 0012057801 / admin"
                 class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
             </div>
           </div>
@@ -129,7 +129,7 @@
               <input type="checkbox" checked class="rounded text-indigo-600 focus:ring-indigo-500">
               Ingat sesi saya
             </label>
-            <a href="#" onclick="showToast('info', 'Lupa Sandi', 'Silakan hubungi Helpdesk BAAK Kampus via email helpdesk@univ-nusantara.ac.id')" class="text-indigo-600 font-semibold hover:underline">Lupa Sandi?</a>
+            <a href="#" onclick="showToast('info', 'Bantuan Akun', 'Silakan hubungi BAAK Kampus via email bakk@univ-nusantara.ac.id')" class="text-indigo-600 font-semibold hover:underline">Bantuan Login?</a>
           </div>
 
           <button type="submit" class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 text-sm mt-2">
@@ -138,24 +138,74 @@
           </button>
         </form>
 
-        <!-- Quick Demo Profiles -->
-        <div class="mt-8 pt-6 border-t border-slate-100">
-          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center mb-3">
-            Akun Demo Pengujian Cepat
-          </p>
-          <div class="grid grid-cols-2 gap-2.5">
-            <button onclick="quickLogin(0)" type="button" class="p-2.5 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-2.5">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover">
+        <!-- Quick Demo Profiles for 3 Roles -->
+        <div class="mt-6 pt-5 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Akses Cepat Demo Akun
+            </p>
+            <span class="text-[10px] text-slate-400 font-medium">Klik untuk auto-login</span>
+          </div>
+
+          <!-- Role Selector Buttons for Demo -->
+          <div class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl mb-3 text-[11px] font-bold text-slate-600">
+            <button type="button" onclick="switchLoginDemoTab('mahasiswa')" id="btn-login-tab-mhs" class="py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition">
+              Mahasiswa
+            </button>
+            <button type="button" onclick="switchLoginDemoTab('dosen')" id="btn-login-tab-dosen" class="py-1.5 rounded-lg hover:text-slate-900 transition">
+              Dosen
+            </button>
+            <button type="button" onclick="switchLoginDemoTab('admin')" id="btn-login-tab-admin" class="py-1.5 rounded-lg hover:text-slate-900 transition">
+              Akademik
+            </button>
+          </div>
+
+          <!-- Mahasiswa Demo List -->
+          <div id="demo-list-mahasiswa" class="grid grid-cols-2 gap-2">
+            <button onclick="quickLoginUser('2024101001')" type="button" class="p-2 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-2">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover shrink-0">
               <div class="truncate">
                 <p class="text-xs font-bold text-slate-800 truncate">Budi Pratama</p>
                 <p class="text-[10px] text-slate-500">Informatika (Sem 5)</p>
               </div>
             </button>
-            <button onclick="quickLogin(1)" type="button" class="p-2.5 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-2.5">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover">
+            <button onclick="quickLoginUser('2024101002')" type="button" class="p-2 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-2">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover shrink-0">
               <div class="truncate">
                 <p class="text-xs font-bold text-slate-800 truncate">Siti Aminah</p>
                 <p class="text-[10px] text-slate-500">Sistem Info (Sem 3)</p>
+              </div>
+            </button>
+          </div>
+
+          <!-- Dosen Demo List -->
+          <div id="demo-list-dosen" class="hidden grid grid-cols-2 gap-2">
+            <button onclick="quickLoginUser('0012057801')" type="button" class="p-2 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-2">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover shrink-0">
+              <div class="truncate">
+                <p class="text-xs font-bold text-slate-800 truncate">Dr. Hendra S.</p>
+                <p class="text-[10px] text-slate-500">Dosen Web / RPL</p>
+              </div>
+            </button>
+            <button onclick="quickLoginUser('0028098302')" type="button" class="p-2 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-2">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover shrink-0">
+              <div class="truncate">
+                <p class="text-xs font-bold text-slate-800 truncate">Maya Kusuma</p>
+                <p class="text-[10px] text-slate-500">Dosen Basis Data</p>
+              </div>
+            </button>
+          </div>
+
+          <!-- Admin Demo List -->
+          <div id="demo-list-admin" class="hidden">
+            <button onclick="quickLoginUser('admin')" type="button" class="w-full p-2.5 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&auto=format&fit=crop&q=80" class="w-9 h-9 rounded-full object-cover shrink-0 ring-2 ring-indigo-500/20">
+              <div class="truncate flex-1">
+                <div class="flex items-center gap-2">
+                  <p class="text-xs font-bold text-slate-800 truncate">Bambang Sudarsono, S.Sos., M.M.</p>
+                  <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[9px] font-bold">Admin BAAK</span>
+                </div>
+                <p class="text-[10px] text-slate-500">Biro Administrasi Akademik & Kemahasiswaan</p>
               </div>
             </button>
           </div>
@@ -230,13 +280,16 @@
             </div>
           </div>
 
-          <!-- Student Profile Pill -->
+          <!-- User Profile Pill & Role Badge -->
           <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div onclick="navigate('profile')" class="flex items-center gap-2.5 cursor-pointer p-1 rounded-xl hover:bg-slate-100 transition">
+            <div onclick="navigate('profile')" class="flex items-center gap-2.5 cursor-pointer p-1 rounded-xl hover:bg-slate-100 transition" title="Lihat Profil">
               <img src="" class="bind-user-avatar w-8 h-8 rounded-full object-cover ring-2 ring-indigo-600/30">
               <div class="hidden sm:block text-left">
-                <p class="bind-user-name text-xs font-bold text-slate-800 leading-tight">Nama Mahasiswa</p>
-                <p class="bind-user-nim text-[10px] font-mono text-slate-500">NIM</p>
+                <p class="bind-user-name text-xs font-bold text-slate-800 leading-tight">Nama Pengguna</p>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <p class="bind-user-nim text-[10px] font-mono text-slate-500">ID</p>
+                  <span id="user-role-badge" class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">Mahasiswa</span>
+                </div>
               </div>
             </div>
             <button onclick="handleLogout()" title="Keluar / Logout" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
@@ -255,54 +308,118 @@
       <aside class="w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col justify-between p-4 shrink-0">
         <div class="space-y-6">
           
-          <!-- Mini Student Summary Card -->
+          <!-- Mini User Summary Card -->
           <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 flex items-center gap-3">
-            <img src="" class="bind-user-avatar w-11 h-11 rounded-xl object-cover ring-2 ring-white shadow-sm">
-            <div class="truncate">
-              <h4 class="bind-user-name font-bold text-xs text-slate-800 truncate">Mahasiswa</h4>
+            <div class="relative group cursor-pointer shrink-0" onclick="openChangeAvatarModal()" title="Klik untuk mengganti foto profil">
+              <img src="" class="bind-user-avatar w-11 h-11 rounded-xl object-cover ring-2 ring-white shadow-sm group-hover:brightness-90 transition">
+              <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white">
+                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+              </div>
+            </div>
+            <div class="truncate flex-1 min-w-0">
+              <h4 class="bind-user-name font-bold text-xs text-slate-800 truncate">Pengguna</h4>
               <p class="bind-user-prodi text-[10px] text-slate-500 truncate">Teknik Informatika</p>
-              <div class="flex items-center gap-2 mt-1">
+              <div class="flex items-center gap-1.5 mt-1" id="sidebar-role-indicator">
                 <span class="bind-user-semester text-[10px] font-bold text-indigo-700 bg-indigo-100/80 px-2 py-0.5 rounded-full">Sem 5</span>
                 <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">IPK: <span class="bind-user-ipk">3.84</span></span>
               </div>
             </div>
           </div>
 
-          <!-- Nav Items -->
+          <!-- Role-based Nav Items -->
           <nav class="space-y-1">
-            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-2">Menu Utama</p>
             
-            <button onclick="navigate('dashboard')" data-tab="dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-              <span>Dashboard</span>
-            </button>
+            <!-- 1. MAHASISWA NAV -->
+            <div id="nav-group-mahasiswa" class="space-y-1">
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-2">Menu Mahasiswa</p>
+              <button onclick="navigate('dashboard')" data-tab="dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span>Dashboard</span>
+              </button>
+              <button onclick="navigate('courses')" data-tab="courses" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                <span>Mata Kuliah & LMS</span>
+              </button>
+              <button onclick="navigate('attendance')" data-tab="attendance" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                <span>Presensi / Kehadiran</span>
+              </button>
+              <button onclick="navigate('krs')" data-tab="krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                <span>Pengisian KRS</span>
+              </button>
+              <button onclick="navigate('assignments')" data-tab="assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                <span>Tugas Kuliah</span>
+              </button>
+              <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span>Profil Mahasiswa</span>
+              </button>
+            </div>
 
-            <button onclick="navigate('courses')" data-tab="courses" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-              <i data-lucide="book-open" class="w-4 h-4"></i>
-              <span>Mata Kuliah & LMS</span>
-            </button>
+            <!-- 2. DOSEN NAV -->
+            <div id="nav-group-dosen" class="hidden space-y-1">
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-2">Portal Dosen</p>
+              <button onclick="navigate('dosen-dashboard')" data-tab="dosen-dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span>Dashboard Dosen</span>
+              </button>
+              <button onclick="navigate('dosen-classes')" data-tab="dosen-classes" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                <span>Manajemen Kelas</span>
+              </button>
+              <button onclick="navigate('dosen-attendance')" data-tab="dosen-attendance" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                <span>Manajemen Absensi</span>
+              </button>
+              <button onclick="navigate('dosen-assignments')" data-tab="dosen-assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="file-check" class="w-4 h-4"></i>
+                <span>Manajemen Tugas</span>
+              </button>
+              <button onclick="navigate('dosen-grades')" data-tab="dosen-grades" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="award" class="w-4 h-4"></i>
+                <span>Input & Publikasi Nilai</span>
+              </button>
+              <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span>Profil Dosen</span>
+              </button>
+            </div>
 
-            <button onclick="navigate('attendance')" data-tab="attendance" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-              <i data-lucide="calendar-check" class="w-4 h-4"></i>
-              <span>Presensi / Kehadiran</span>
-            </button>
+            <!-- 3. AKADEMIK / ADMIN NAV -->
+            <div id="nav-group-admin" class="hidden space-y-1">
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-2">Administrasi Kampus</p>
+              <button onclick="navigate('admin-dashboard')" data-tab="admin-dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span>Dashboard Akademik</span>
+              </button>
+              <button onclick="navigate('admin-students')" data-tab="admin-students" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span>Data Mahasiswa</span>
+              </button>
+              <button onclick="navigate('admin-lecturers')" data-tab="admin-lecturers" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                <span>Data Dosen</span>
+              </button>
+              <button onclick="navigate('admin-courses')" data-tab="admin-courses" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="book-marked" class="w-4 h-4"></i>
+                <span>Mata Kuliah</span>
+              </button>
+              <button onclick="navigate('admin-classes')" data-tab="admin-classes" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="layers" class="w-4 h-4"></i>
+                <span>Semester & Kelas</span>
+              </button>
+              <button onclick="navigate('admin-krs')" data-tab="admin-krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                <span>Manajemen KRS</span>
+              </button>
+              <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                <i data-lucide="user" class="w-4 h-4"></i>
+                <span>Profil Admin</span>
+              </button>
+            </div>
 
-            <button onclick="navigate('krs')" data-tab="krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-              <i data-lucide="clipboard-check" class="w-4 h-4"></i>
-              <span>Pengisian KRS</span>
-            </button>
-
-            <button onclick="navigate('assignments')" data-tab="assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-              <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-              <span>Tugas & Upload Berkas</span>
-            </button>
-
-            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 pt-4 mb-2">Akademik</p>
-
-            <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-              <i data-lucide="user-check" class="w-4 h-4"></i>
-              <span>Profil Mahasiswa</span>
-            </button>
           </nav>
 
         </div>
@@ -312,9 +429,9 @@
           <div class="p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 flex items-center justify-between">
             <div>
               <p class="font-bold text-slate-700">EduLMS v2.4</p>
-              <p class="text-[10px] text-slate-400">Campus Cloud System</p>
+              <p class="text-[10px] text-slate-400">Integrated Campus System</p>
             </div>
-            <span class="w-2 h-2 rounded-full bg-emerald-500" title="Koneksi Online"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500" title="Koneksi Sistem Aktif"></span>
           </div>
         </div>
       </aside>
@@ -337,30 +454,93 @@
             </div>
 
             <nav class="space-y-1">
-              <button onclick="navigate('dashboard')" data-tab="dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                <span>Dashboard</span>
-              </button>
-              <button onclick="navigate('courses')" data-tab="courses" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-                <i data-lucide="book-open" class="w-4 h-4"></i>
-                <span>Mata Kuliah & LMS</span>
-              </button>
-              <button onclick="navigate('attendance')" data-tab="attendance" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-                <i data-lucide="calendar-check" class="w-4 h-4"></i>
-                <span>Presensi / Kehadiran</span>
-              </button>
-              <button onclick="navigate('krs')" data-tab="krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-                <i data-lucide="clipboard-check" class="w-4 h-4"></i>
-                <span>Pengisian KRS</span>
-              </button>
-              <button onclick="navigate('assignments')" data-tab="assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                <span>Tugas Kuliah</span>
-              </button>
-              <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
-                <i data-lucide="user" class="w-4 h-4"></i>
-                <span>Profil</span>
-              </button>
+              <!-- Mobile Mahasiswa Nav -->
+              <div id="mobile-nav-group-mahasiswa" class="space-y-1">
+                <button onclick="navigate('dashboard')" data-tab="dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  <span>Dashboard</span>
+                </button>
+                <button onclick="navigate('courses')" data-tab="courses" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="book-open" class="w-4 h-4"></i>
+                  <span>Mata Kuliah & LMS</span>
+                </button>
+                <button onclick="navigate('attendance')" data-tab="attendance" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                  <span>Presensi</span>
+                </button>
+                <button onclick="navigate('krs')" data-tab="krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                  <span>KRS Online</span>
+                </button>
+                <button onclick="navigate('assignments')" data-tab="assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                  <span>Tugas Kuliah</span>
+                </button>
+                <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                  <span>Profil</span>
+                </button>
+              </div>
+
+              <!-- Mobile Dosen Nav -->
+              <div id="mobile-nav-group-dosen" class="hidden space-y-1">
+                <button onclick="navigate('dosen-dashboard')" data-tab="dosen-dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  <span>Dashboard Dosen</span>
+                </button>
+                <button onclick="navigate('dosen-classes')" data-tab="dosen-classes" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                  <span>Manajemen Kelas</span>
+                </button>
+                <button onclick="navigate('dosen-attendance')" data-tab="dosen-attendance" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                  <span>Absensi</span>
+                </button>
+                <button onclick="navigate('dosen-assignments')" data-tab="dosen-assignments" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="file-check" class="w-4 h-4"></i>
+                  <span>Tugas</span>
+                </button>
+                <button onclick="navigate('dosen-grades')" data-tab="dosen-grades" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="award" class="w-4 h-4"></i>
+                  <span>Nilai Mahasiswa</span>
+                </button>
+                <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                  <span>Profil Dosen</span>
+                </button>
+              </div>
+
+              <!-- Mobile Admin Nav -->
+              <div id="mobile-nav-group-admin" class="hidden space-y-1">
+                <button onclick="navigate('admin-dashboard')" data-tab="admin-dashboard" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  <span>Dashboard BAAK</span>
+                </button>
+                <button onclick="navigate('admin-students')" data-tab="admin-students" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="user-check" class="w-4 h-4"></i>
+                  <span>Data Mahasiswa</span>
+                </button>
+                <button onclick="navigate('admin-lecturers')" data-tab="admin-lecturers" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                  <span>Data Dosen</span>
+                </button>
+                <button onclick="navigate('admin-courses')" data-tab="admin-courses" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="book-marked" class="w-4 h-4"></i>
+                  <span>Mata Kuliah</span>
+                </button>
+                <button onclick="navigate('admin-classes')" data-tab="admin-classes" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="layers" class="w-4 h-4"></i>
+                  <span>Semester & Kelas</span>
+                </button>
+                <button onclick="navigate('admin-krs')" data-tab="admin-krs" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                  <span>Manajemen KRS</span>
+                </button>
+                <button onclick="navigate('profile')" data-tab="profile" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                  <span>Profil Admin</span>
+                </button>
+              </div>
             </nav>
           </div>
 
@@ -784,66 +964,928 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- 7. PROFILE SECTION -->
+        <!-- 7. PROFILE SECTION (MULTI-ROLE & FOTO PROFIL) -->
         <!-- ========================================== -->
         <section id="section-profile" class="app-section hidden space-y-6">
           <div class="max-w-4xl mx-auto space-y-6">
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Profil Lengkap Mahasiswa</h2>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight" id="prof-header-title">Profil Lengkap Pengguna</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Kelola identitas, foto profil, dan data akademik resmi Anda.</p>
+              </div>
+              <button onclick="openChangeAvatarModal()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition self-start sm:self-auto">
+                <i data-lucide="camera" class="w-4 h-4"></i>
+                <span>Ganti Foto Profil</span>
+              </button>
+            </div>
             
-            <!-- Student ID Card Visual -->
+            <!-- User ID Card Visual -->
             <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-xl relative overflow-hidden border border-white/10">
               <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
-                <img src="" class="bind-user-avatar w-28 h-28 rounded-2xl object-cover ring-4 ring-white/20 shadow-lg">
-                <div class="text-center sm:text-left flex-1">
-                  <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
-                    <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">Mahasiswa Aktif</span>
-                    <span class="bind-user-semester px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold">Semester 5</span>
+                <div class="relative group cursor-pointer shrink-0" onclick="openChangeAvatarModal()" title="Klik untuk mengganti foto profil">
+                  <img src="" class="bind-user-avatar w-28 h-28 rounded-2xl object-cover ring-4 ring-white/20 shadow-lg group-hover:brightness-90 transition">
+                  <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition text-white">
+                    <i data-lucide="camera" class="w-6 h-6"></i>
+                    <span class="text-[10px] font-bold mt-1">Ubah Foto</span>
                   </div>
-                  <h3 class="bind-user-name text-2xl font-black">Nama Mahasiswa</h3>
-                  <p class="font-mono text-indigo-300 font-semibold text-sm mt-0.5">NIM: <span class="bind-user-nim">2024101001</span></p>
-                  <p class="text-xs text-white/70 mt-1">Universitas Nusantara Teknologi • Fakultas Ilmu Komputer</p>
+                  <button type="button" class="absolute -bottom-2 -right-2 p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg border-2 border-slate-900 flex items-center justify-center transition group-hover:scale-110" title="Ganti Foto">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+                <div class="text-center sm:text-left flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
+                    <span id="prof-card-role-badge" class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">Mahasiswa Aktif</span>
+                    <span id="prof-card-sub-badge" class="bind-user-semester px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold">Semester 5</span>
+                  </div>
+                  <h3 class="bind-user-name text-2xl font-black truncate">Nama Pengguna</h3>
+                  <p class="font-mono text-indigo-300 font-semibold text-sm mt-0.5" id="prof-card-id-text">NIM: <span class="bind-user-nim">2024101001</span></p>
+                  <p class="text-xs text-white/70 mt-1" id="prof-card-institution">Universitas Nusantara Teknologi • Fakultas Ilmu Komputer</p>
+
+                  <div class="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                    <button onclick="openChangeAvatarModal()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 backdrop-blur-sm transition flex items-center gap-1.5 shadow-sm">
+                      <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                      <span>Ganti Foto Profil</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Details Card -->
             <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-              <h4 class="font-bold text-slate-800 text-base pb-3 border-b border-slate-100">Informasi Akademik & Data Diri</h4>
+              <h4 class="font-bold text-slate-800 text-base pb-3 border-b border-slate-100" id="prof-details-heading">Informasi Akademik & Data Diri</h4>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs" id="prof-details-grid">
                 <div>
                   <p class="text-slate-400 font-semibold uppercase">Nama Lengkap</p>
                   <p id="prof-name" class="font-bold text-slate-800 text-sm mt-1">-</p>
                 </div>
                 <div>
-                  <p class="text-slate-400 font-semibold uppercase">Nomor Induk Mahasiswa (NIM)</p>
+                  <p class="text-slate-400 font-semibold uppercase" id="prof-label-id">Nomor Induk Mahasiswa (NIM)</p>
                   <p id="prof-nim" class="font-mono font-bold text-slate-800 text-sm mt-1">-</p>
                 </div>
                 <div>
-                  <p class="text-slate-400 font-semibold uppercase">Email Kampus</p>
+                  <p class="text-slate-400 font-semibold uppercase">Email Resmi</p>
                   <p id="prof-email" class="font-bold text-indigo-600 text-sm mt-1">-</p>
                 </div>
                 <div>
                   <p class="text-slate-400 font-semibold uppercase">Nomor Telepon</p>
                   <p id="prof-phone" class="font-bold text-slate-800 text-sm mt-1">-</p>
                 </div>
-                <div>
-                  <p class="text-slate-400 font-semibold uppercase">Program Studi</p>
+                <div id="prof-row-prodi">
+                  <p class="text-slate-400 font-semibold uppercase">Program Studi / Bagian</p>
                   <p id="prof-prodi" class="font-bold text-slate-800 text-sm mt-1">-</p>
                 </div>
                 <div>
-                  <p class="text-slate-400 font-semibold uppercase">Fakultas</p>
+                  <p class="text-slate-400 font-semibold uppercase">Fakultas / Unit</p>
                   <p id="prof-fakultas" class="font-bold text-slate-800 text-sm mt-1">-</p>
                 </div>
-                <div>
-                  <p class="text-slate-400 font-semibold uppercase">Dosen Pembimbing Akademik (PA)</p>
+                <div id="prof-row-dosenpa">
+                  <p class="text-slate-400 font-semibold uppercase" id="prof-label-dosenpa">Dosen Pembimbing Akademik (PA)</p>
                   <p id="prof-dosen-pa" class="font-bold text-slate-800 text-sm mt-1">-</p>
                 </div>
-                <div>
-                  <p class="text-slate-400 font-semibold uppercase">Indeks Prestasi Kumulatif (IPK)</p>
+                <div id="prof-row-ipk">
+                  <p class="text-slate-400 font-semibold uppercase" id="prof-label-ipk">Indeks Prestasi Kumulatif (IPK)</p>
                   <p id="prof-ipk" class="font-black text-emerald-600 text-base mt-1">-</p>
                 </div>
+                <div id="prof-row-semester">
+                  <p class="text-slate-400 font-semibold uppercase">Semester</p>
+                  <p id="prof-semester" class="font-bold text-slate-800 text-sm mt-1">-</p>
+                </div>
+                <div id="prof-row-sks">
+                  <p class="text-slate-400 font-semibold uppercase">Total SKS Lulus</p>
+                  <p id="prof-sks-lulus" class="font-bold text-indigo-600 text-sm mt-1">-</p>
+                </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 8. DOSEN: DASHBOARD SECTION -->
+        <!-- ========================================== -->
+        <section id="section-dosen-dashboard" class="app-section hidden space-y-6">
+          <!-- Hero Banner Dosen -->
+          <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-indigo-700 via-indigo-800 to-slate-900 text-white relative overflow-hidden shadow-xl shadow-indigo-600/10">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/20 backdrop-blur-md mb-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  Portal Dosen Pengampu Aktif
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
+                  Selamat Datang, <span class="bind-user-name">Dosen</span>! 👨‍🏫
+                </h1>
+                <p class="text-xs sm:text-sm text-indigo-100/90 mt-1 max-w-xl leading-relaxed">
+                  Kelola mata kuliah, buka sesi absensi mahasiswa, tinjau berkas tugas yang dikumpulkan, dan masukkan nilai akhir akademik secara terintegrasi.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                <button onclick="openCreateAssignmentModal()" class="px-4 py-2.5 rounded-xl bg-white text-indigo-600 hover:bg-indigo-50 font-bold text-xs shadow-md transition flex items-center gap-1.5">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  Buat Tugas Baru
+                </button>
+                <button onclick="navigate('dosen-attendance')" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs backdrop-blur-sm transition flex items-center gap-1.5">
+                  <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                  Kelola Absensi
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards Dosen -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kelas Diajar</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="dosen-stat-classes">2 Kelas</h3>
+                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">Semester Ganjil 2026</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="users" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mahasiswa Diampu</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="dosen-stat-students">58 Mahasiswa</h3>
+                <p class="text-[10px] text-indigo-600 font-semibold mt-0.5">Total akumulasi kelas</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="file-text" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tugas Aktif</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="dosen-stat-tasks">3 Tugas</h3>
+                <p class="text-[10px] text-amber-600 font-semibold mt-0.5">Menunggu penilaian</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="check-check" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Rata-rata Presensi</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="dosen-stat-attendance">95.4%</h3>
+                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">Tingkat kehadiran kelas</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Grid: Jadwal Mengajar & Submission Terkini -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Jadwal Perkuliahan Dosen -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="p-2 rounded-xl bg-indigo-50 text-indigo-600">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-extrabold text-base text-slate-800">Jadwal Perkuliahan yang Diampu</h3>
+                    <p class="text-xs text-slate-400">Kelas aktif semester berjalan 2026/2027</p>
+                  </div>
+                </div>
+                <button onclick="navigate('dosen-classes')" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
+                  Lihat Semua
+                </button>
+              </div>
+              <div id="dosen-dashboard-courses" class="space-y-3">
+                <!-- Dynamically loaded -->
+              </div>
+            </div>
+
+            <!-- Tugas Mahasiswa Masuk & Menunggu Review -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="p-2 rounded-xl bg-amber-50 text-amber-600">
+                    <i data-lucide="inbox" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-extrabold text-base text-slate-800">Pengumpulan Tugas Terbaru</h3>
+                    <p class="text-xs text-slate-400">Menunggu penilaian dan feedback</p>
+                  </div>
+                </div>
+                <button onclick="navigate('dosen-assignments')" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
+                  Kelola
+                </button>
+              </div>
+              <div id="dosen-dashboard-submissions" class="space-y-3">
+                <!-- Dynamically loaded -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 9. DOSEN: MANAJEMEN KELAS -->
+        <!-- ========================================== -->
+        <section id="section-dosen-classes" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Kelas & Mahasiswa</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Daftar mata kuliah dan data mahasiswa yang terdaftar dalam kelas yang Anda ampu.</p>
+            </div>
+          </div>
+
+          <!-- Classes Grid -->
+          <div id="dosen-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Class Students List Container (Active when a class is selected) -->
+          <div id="dosen-class-detail-card" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span id="dosen-selected-class-code" class="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">IF501</span>
+                <h3 id="dosen-selected-class-name" class="font-black text-lg text-slate-800 mt-1">Pemrograman Web Lanjut - Kelas A</h3>
+                <p id="dosen-selected-class-schedule" class="text-xs text-slate-500 mt-0.5">Senin, 08:00 - 10:30 WIB • Lab Komputer 3 (Gedung B)</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="navigate('dosen-attendance')" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
+                  <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                  Presensi Kelas
+                </button>
+                <button onclick="navigate('dosen-grades')" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5">
+                  <i data-lucide="award" class="w-4 h-4"></i>
+                  Input Nilai
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIM</th>
+                    <th class="py-3 px-4">Nama Mahasiswa</th>
+                    <th class="py-3 px-4">Program Studi</th>
+                    <th class="py-3 px-4 text-center">Semester</th>
+                    <th class="py-3 px-4 text-center">Kehadiran</th>
+                    <th class="py-3 px-4 text-center">Nilai Akhir</th>
+                    <th class="py-3 px-4 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dosen-class-students-table">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 10. DOSEN: MANAJEMEN ABSENSI -->
+        <!-- ========================================== -->
+        <section id="section-dosen-attendance" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Presensi & Absensi Kuliah</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola sesi pertemuan, buka presensi, dan kelola kehadiran mahasiswa: Hadir, Izin, Sakit, atau Alfa.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <select id="dosen-attendance-course-select" onchange="handleDosenAttendanceCourseChange()" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <!-- Dynamically loaded with lecturer's courses -->
+              </select>
+              <button onclick="openDosenCreateMeetingModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 shrink-0">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                Buka Sesi Presensi
+              </button>
+            </div>
+          </div>
+
+          <!-- Meetings Sessions List -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 class="font-extrabold text-base text-slate-800">Daftar Sesi Perkuliahan (16 Pertemuan)</h3>
+                <p class="text-xs text-slate-400">Pilih sesi untuk melihat dan mengedit absensi mahasiswa</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-20 text-center">Sesi</th>
+                    <th class="py-3 px-4">Topik Materi Perkuliahan</th>
+                    <th class="py-3 px-4 w-36">Jadwal Tanggal</th>
+                    <th class="py-3 px-4 text-center w-36">Rekap Hadir</th>
+                    <th class="py-3 px-4 text-center w-28">Status</th>
+                    <th class="py-3 px-4 text-right w-36">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="dosen-meetings-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Attendance Marking Panel for Selected Session -->
+          <div id="dosen-attendance-marking-panel" class="hidden bg-white rounded-3xl border-2 border-indigo-200 shadow-md p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+              <div>
+                <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider" id="dosen-active-session-label">Pertemuan ke-1</span>
+                <h3 class="text-lg font-black text-slate-900" id="dosen-active-session-topic">Topik Materi</h3>
+                <p class="text-xs text-slate-400" id="dosen-active-session-date">Senin, 14 November 2026</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="setAllAttendanceStatus('Hadir')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-bold transition">
+                  Set Semua Hadir
+                </button>
+                <button onclick="saveDosenAttendanceChanges()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md transition flex items-center gap-1.5">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  Simpan Presensi
+                </button>
+              </div>
+            </div>
+
+            <!-- Student attendance radio list -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-2.5 px-3 w-10 text-center">No</th>
+                    <th class="py-2.5 px-3 w-32">NIM</th>
+                    <th class="py-2.5 px-3">Nama Mahasiswa</th>
+                    <th class="py-2.5 px-3 text-center">Hadir</th>
+                    <th class="py-2.5 px-3 text-center">Izin</th>
+                    <th class="py-2.5 px-3 text-center">Sakit</th>
+                    <th class="py-2.5 px-3 text-center">Alfa</th>
+                    <th class="py-2.5 px-3">Keterangan / Catatan</th>
+                  </tr>
+                </thead>
+                <tbody id="dosen-attendance-students-table">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Overall Attendance Rekapitulasi Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100">
+              <h3 class="font-extrabold text-base text-slate-800">Rekapitulasi Kehadiran Mahasiswa Semester Ini</h3>
+              <p class="text-xs text-slate-400">Syarat minimal mengikuti Ujian Akhir Semester (UAS) adalah kehadiran ≥ 75%</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIM</th>
+                    <th class="py-3 px-4">Nama Mahasiswa</th>
+                    <th class="py-3 px-4 text-center">Hadir</th>
+                    <th class="py-3 px-4 text-center">Izin</th>
+                    <th class="py-3 px-4 text-center">Sakit</th>
+                    <th class="py-3 px-4 text-center">Alfa</th>
+                    <th class="py-3 px-4 text-center">% Kehadiran</th>
+                    <th class="py-3 px-4 text-right">Syarat Ujian</th>
+                  </tr>
+                </thead>
+                <tbody id="dosen-attendance-rekap-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 11. DOSEN: MANAJEMEN TUGAS -->
+        <!-- ========================================== -->
+        <section id="section-dosen-assignments" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen & Penilaian Tugas Kuliah</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Buat penugasan baru, lihat berkas jawaban yang dikumpulkan mahasiswa, dan berikan nilai serta feedback.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <select id="dosen-task-course-filter" onchange="renderDosenAssignments()" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <!-- Dynamically loaded -->
+              </select>
+              <button onclick="openCreateAssignmentModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 shrink-0">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                Buat Tugas Baru
+              </button>
+            </div>
+          </div>
+
+          <!-- Assignments Created by Lecturer -->
+          <div id="dosen-assignments-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamically loaded -->
+          </div>
+
+          <!-- Student Submissions Table for Selected Task -->
+          <div id="dosen-submissions-card" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md" id="dosen-active-task-course">IF501</span>
+                <h3 class="font-black text-base text-slate-800 mt-1" id="dosen-active-task-title">Daftar Pengumpulan Tugas</h3>
+                <p class="text-xs text-slate-400 mt-0.5" id="dosen-active-task-deadline">Batas: -</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="dosen-active-task-count" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Total Pengumpulan: 0</span>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIM</th>
+                    <th class="py-3 px-4">Nama Mahasiswa</th>
+                    <th class="py-3 px-4">Waktu Submit</th>
+                    <th class="py-3 px-4">Berkas Tugas</th>
+                    <th class="py-3 px-4 text-center">Nilai (0-100)</th>
+                    <th class="py-3 px-4">Catatan / Feedback</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="dosen-submissions-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 12. DOSEN: INPUT & PUBLIKASI NILAI -->
+        <!-- ========================================== -->
+        <section id="section-dosen-grades" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Input & Publikasi Nilai Mahasiswa</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Input nilai Tugas, UTS, dan UAS. Nilai akhir dihitung otomatis dan dapat dipublikasikan ke portal mahasiswa.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <select id="dosen-grades-course-select" onchange="handleDosenGradeCourseChange()" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <!-- Dynamically loaded -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Formula Info & Publish Banner -->
+          <div class="p-5 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0">
+                <i data-lucide="calculator" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 text-xs sm:text-sm">Formula Pembobotan Nilai Akhir</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">Nilai Akhir = (30% × Tugas) + (30% × UTS) + (40% × UAS)</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <span id="dosen-grade-status-badge" class="px-3 py-1.5 rounded-xl bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200">
+                Status: Draf (Belum Terkunci)
+              </span>
+              <button onclick="saveDosenGrades(false)" class="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl shadow-sm transition">
+                Simpan Draf
+              </button>
+              <button onclick="saveDosenGrades(true)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                Publikasikan Nilai ke Mahasiswa
+              </button>
+            </div>
+          </div>
+
+          <!-- Grades Input Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIM</th>
+                    <th class="py-3 px-4">Nama Mahasiswa</th>
+                    <th class="py-3 px-4 w-28 text-center">Tugas (30%)</th>
+                    <th class="py-3 px-4 w-28 text-center">UTS (30%)</th>
+                    <th class="py-3 px-4 w-28 text-center">UAS (40%)</th>
+                    <th class="py-3 px-4 w-28 text-center">Nilai Akhir</th>
+                    <th class="py-3 px-4 w-24 text-center">Grade</th>
+                    <th class="py-3 px-4 text-right">Status Publikasi</th>
+                  </tr>
+                </thead>
+                <tbody id="dosen-grades-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 13. ADMIN: DASHBOARD SECTION -->
+        <!-- ========================================== -->
+        <section id="section-admin-dashboard" class="app-section hidden space-y-6">
+          <!-- Admin Hero Banner -->
+          <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-purple-800 via-indigo-900 to-slate-900 text-white relative overflow-hidden shadow-xl shadow-purple-900/10">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/20 backdrop-blur-md mb-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  Pusat Kendali Administrasi Akademik (BAAK)
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
+                  Dashboard Administrator Akademik 🏛️
+                </h1>
+                <p class="text-xs sm:text-sm text-purple-100/90 mt-1 max-w-xl leading-relaxed">
+                  Kelola master data mahasiswa, dosen, kurikulum mata kuliah, pembagian kelas, serta kontrol periode dan validasi pengisian KRS mahasiswa.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                <button onclick="toggleKrsPeriod()" id="btn-toggle-krs-period" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
+                  <i data-lucide="power" class="w-4 h-4"></i>
+                  Periode KRS: BUKA
+                </button>
+                <button onclick="openStudentModal()" class="px-4 py-2.5 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 font-bold text-xs shadow-md transition flex items-center gap-1.5">
+                  <i data-lucide="user-plus" class="w-4 h-4"></i>
+                  Tambah Mahasiswa
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 4 Metrics KPI -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="users" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Mahasiswa</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="admin-stat-students">5 Mahasiswa</h3>
+                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">100% Status Aktif</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Dosen</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="admin-stat-lecturers">4 Dosen</h3>
+                <p class="text-[10px] text-indigo-600 font-semibold mt-0.5">Fakultas Ilmu Komputer</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="book-marked" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mata Kuliah</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="admin-stat-courses">6 Matkul</h3>
+                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">Kurikulum 2026</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-black shrink-0">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kelas Perkuliahan</p>
+                <h3 class="text-2xl font-black text-slate-800 mt-0.5" id="admin-stat-classes">6 Kelas Aktif</h3>
+                <p class="text-[10px] text-amber-600 font-semibold mt-0.5">Semester Ganjil</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Status & KRS Card -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="p-2 rounded-xl bg-purple-50 text-purple-600">
+                    <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-extrabold text-base text-slate-800">Status & Validasi KRS Mahasiswa</h3>
+                    <p class="text-xs text-slate-400">Pengajuan rencana studi semester ganjil</p>
+                  </div>
+                </div>
+                <button onclick="navigate('admin-krs')" class="text-xs font-bold text-purple-600 hover:text-purple-700 hover:underline">
+                  Kelola KRS
+                </button>
+              </div>
+              <div class="space-y-3" id="admin-krs-quick-summary">
+                <!-- Dynamically loaded -->
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="p-2 rounded-xl bg-indigo-50 text-indigo-600">
+                    <i data-lucide="activity" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-extrabold text-base text-slate-800">Log Aktivitas Sistem Akademik</h3>
+                    <p class="text-xs text-slate-400">Pencatatan aktivitas terkini kampus</p>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-2.5 text-xs text-slate-600" id="admin-audit-log">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <p><span class="font-bold text-slate-800">Budi Pratama</span> melakukan presensi online (IF501).</p>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">10 menit lalu</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    <p><span class="font-bold text-slate-800">Dr. Hendra Setiawan</span> mempublikasikan nilai Tugas 1.</p>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">1 jam lalu</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                    <p><span class="font-bold text-slate-800">Siti Nur Aminah</span> mengajukan validasi KRS semester 3.</p>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">2 jam lalu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 14. ADMIN: MANAJEMEN MAHASISWA -->
+        <!-- ========================================== -->
+        <section id="section-admin-students" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Data Mahasiswa</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola data induk mahasiswa, program studi, status akademik, dan informasi kontak.</p>
+            </div>
+            <button onclick="openStudentModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>Tambah Mahasiswa Baru</span>
+            </button>
+          </div>
+
+          <!-- Search & Filter Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="relative flex-1 max-w-md">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
+                <i data-lucide="search" class="w-4 h-4"></i>
+              </span>
+              <input type="text" id="admin-student-search" oninput="renderAdminStudents()" placeholder="Cari nama atau NIM mahasiswa..."
+                class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="admin-student-prodi-filter" onchange="renderAdminStudents()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                <option value="ALL">Semua Program Studi</option>
+                <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
+                <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Students Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIM</th>
+                    <th class="py-3 px-4">Nama Mahasiswa</th>
+                    <th class="py-3 px-4">Program Studi</th>
+                    <th class="py-3 px-4 text-center">Semester</th>
+                    <th class="py-3 px-4 text-center">IPK</th>
+                    <th class="py-3 px-4 text-center">SKS</th>
+                    <th class="py-3 px-4 text-center">Status</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-students-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 15. ADMIN: MANAJEMEN DOSEN -->
+        <!-- ========================================== -->
+        <section id="section-admin-lecturers" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Data Dosen Pengajar</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola data dosen pengampu, NIDN/NIP, jabatan fungsional, dan mata kuliah yang diampu.</p>
+            </div>
+            <button onclick="openLecturerModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>Tambah Dosen Baru</span>
+            </button>
+          </div>
+
+          <!-- Lecturers Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIDN</th>
+                    <th class="py-3 px-4">Nama Lengkap & Gelar</th>
+                    <th class="py-3 px-4">Program Studi</th>
+                    <th class="py-3 px-4">Jabatan Akademik</th>
+                    <th class="py-3 px-4">Mata Kuliah Diampu</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-lecturers-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 16. ADMIN: MANAJEMEN MATA KULIAH -->
+        <!-- ========================================== -->
+        <section id="section-admin-courses" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Kurikulum & Mata Kuliah</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola daftar mata kuliah, kode matkul, bobot SKS, semester, dan dosen pengampu utama.</p>
+            </div>
+            <button onclick="openCourseModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Tambah Mata Kuliah</span>
+            </button>
+          </div>
+
+          <!-- Courses Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-24">Kode MK</th>
+                    <th class="py-3 px-4">Nama Mata Kuliah</th>
+                    <th class="py-3 px-4 text-center w-16">SKS</th>
+                    <th class="py-3 px-4 text-center w-24">Semester</th>
+                    <th class="py-3 px-4">Program Studi</th>
+                    <th class="py-3 px-4">Dosen Pengampu Utama</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-courses-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 17. ADMIN: SEMESTER & KELAS PERKULIAHAN -->
+        <!-- ========================================== -->
+        <section id="section-admin-classes" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Semester & Manajemen Kelas Perkuliahan</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Atur semester aktif, kuota mahasiswa, ruangan, jadwal perkuliahan, dan dosen pengajar kelas.</p>
+            </div>
+            <button onclick="openClassModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Buka Kelas Baru</span>
+            </button>
+          </div>
+
+          <!-- Active Semester Info Card -->
+          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">
+                <i data-lucide="calendar" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Semester Aktif</span>
+                <h3 class="text-lg font-black text-slate-800 mt-1">Semester Ganjil 2026/2027</h3>
+                <p class="text-xs text-slate-500">Periode Perkuliahan: 1 September 2026 s/d 15 Januari 2027</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="showToast('info', 'Pengaturan Semester', 'Periode semester aktif terkunci dan berjalan normal.')" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                Konfigurasi Kalender
+              </button>
+            </div>
+          </div>
+
+          <!-- Classes Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-28">Kode Kelas</th>
+                    <th class="py-3 px-4">Mata Kuliah</th>
+                    <th class="py-3 px-4">Jadwal Kuliah</th>
+                    <th class="py-3 px-4">Ruangan</th>
+                    <th class="py-3 px-4">Dosen Pengampu</th>
+                    <th class="py-3 px-4 text-center">Kuota Mahasiswa</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-classes-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 18. ADMIN: MANAJEMEN & VALIDASI KRS -->
+        <!-- ========================================== -->
+        <section id="section-admin-krs" class="app-section hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen & Validasi Kartu Rencana Studi (KRS)</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Kontrol periode pengisian KRS, statistik pemilihan mata kuliah, serta validasi rencana studi mahasiswa.</p>
+            </div>
+            <button onclick="toggleKrsPeriod()" id="admin-krs-period-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 self-start sm:self-auto">
+              <i data-lucide="power" class="w-4 h-4"></i>
+              <span id="admin-krs-period-text">Periode KRS: DIBUKA</span>
+            </button>
+          </div>
+
+          <!-- KRS Period Notice Banner -->
+          <div id="admin-krs-period-banner" class="p-5 rounded-3xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black shrink-0">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-emerald-950 text-sm">Periode Pengisian KRS Sedang DIBUKA</h4>
+                <p class="text-xs text-emerald-800/80 mt-0.5">Mahasiswa dapat memilih mata kuliah dan mengajukan validasi. Klik tombol di kanan atas untuk menutup periode.</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono font-bold text-emerald-700 bg-white px-3 py-1.5 rounded-xl border border-emerald-200 shadow-sm shrink-0">
+              Batas: 30 Nov 2026
+            </span>
+          </div>
+
+          <!-- Course Catalog Popularity & Capacity -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-extrabold text-base text-slate-800">Statistik Kapasitas Kelas & Peminatan KRS</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="admin-krs-course-stats">
+              <!-- Dynamically loaded -->
+            </div>
+          </div>
+
+          <!-- Student KRS Submissions Table -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 class="font-extrabold text-base text-slate-800">Daftar Pengajuan Rencana Studi Mahasiswa</h3>
+                <p class="text-xs text-slate-400">Tinjau mata kuliah yang dipilih dan tentukan persetujuan akademik</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4 w-12 text-center">No</th>
+                    <th class="py-3 px-4 w-32">NIM</th>
+                    <th class="py-3 px-4">Nama Mahasiswa</th>
+                    <th class="py-3 px-4">Program Studi</th>
+                    <th class="py-3 px-4 text-center">Semester</th>
+                    <th class="py-3 px-4 text-center">Total SKS</th>
+                    <th class="py-3 px-4 text-center">Status KRS</th>
+                    <th class="py-3 px-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-krs-submissions-table-body">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -1011,6 +2053,712 @@
           <i data-lucide="send" class="w-4 h-4"></i>
           Kirim Berkas Tugas
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: GANTI FOTO PROFIL MAHASISWA & USER -->
+  <!-- ========================================== -->
+  <div id="modal-change-avatar" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+            <i data-lucide="camera" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Ganti Foto Profil</h3>
+            <p class="text-xs text-slate-500">Perbarui foto identitas akun Anda</p>
+          </div>
+        </div>
+        <button onclick="closeChangeAvatarModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="py-5 space-y-4">
+        <!-- Live Preview -->
+        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+          <div class="relative shrink-0">
+            <img id="avatar-preview-img" src="" alt="Pratinjau" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-indigo-500 shadow-sm bg-white">
+            <span class="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-indigo-600 text-[9px] font-bold text-white shadow">
+              Preview
+            </span>
+          </div>
+          <div class="space-y-1 text-left min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-800">Pratinjau Foto Profil Baru</p>
+            <p class="text-[11px] text-slate-500 truncate" id="avatar-preview-source">Foto saat ini</p>
+            <button type="button" onclick="resetAvatarToDefault()" class="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-700 hover:underline pt-0.5">
+              <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+              Reset ke foto awal
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode Selection Tabs -->
+        <div class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl text-xs font-bold text-slate-600">
+          <button type="button" id="tab-avatar-upload" onclick="switchAvatarTab('upload')" class="py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition">
+            Unggah File
+          </button>
+          <button type="button" id="tab-avatar-presets" onclick="switchAvatarTab('presets')" class="py-1.5 rounded-lg hover:text-slate-900 transition">
+            Koleksi Avatar
+          </button>
+          <button type="button" id="tab-avatar-url" onclick="switchAvatarTab('url')" class="py-1.5 rounded-lg hover:text-slate-900 transition">
+            Link / URL
+          </button>
+        </div>
+
+        <!-- Tab 1: Upload File -->
+        <div id="avatar-panel-upload" class="space-y-3">
+          <input type="file" id="avatar-file-input" class="hidden" accept="image/png,image/jpeg,image/jpg,image/webp">
+          <div id="avatar-drop-zone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/30 transition flex flex-col items-center justify-center">
+            <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2">
+              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-700">Pilih foto dari komputer / HP Anda</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Klik untuk membuka file atau seret ke sini</p>
+            <p class="text-[10px] text-slate-400 mt-2">Mendukung: JPG, PNG, WEBP (Otomatis dioptimasi)</p>
+          </div>
+        </div>
+
+        <!-- Tab 2: Preset Avatars -->
+        <div id="avatar-panel-presets" class="hidden space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Koleksi Avatar Pilihan</label>
+          <div class="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1" id="avatar-preset-grid">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab 3: URL Input -->
+        <div id="avatar-panel-url" class="hidden space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="avatar-url-input">
+              URL Gambar Foto Profil
+            </label>
+            <div class="flex gap-2">
+              <input type="url" id="avatar-url-input" placeholder="https://images.unsplash.com/..."
+                class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <button type="button" onclick="previewAvatarFromUrl()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+                Tinjau
+              </button>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1">Masukkan tautan gambar publik berformat HTTPS.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeChangeAvatarModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Batal
+        </button>
+        <button type="button" onclick="saveNewAvatar()" id="btn-save-avatar" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          Simpan Foto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DOSEN BUAT TUGAS BARU -->
+  <!-- ========================================== -->
+  <div id="modal-dosen-assignment" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+            <i data-lucide="file-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Buat Penugasan Kuliah Baru</h3>
+            <p class="text-xs text-slate-500">Tugas akan langsung muncul di portal mahasiswa</p>
+          </div>
+        </div>
+        <button onclick="closeCreateAssignmentModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-dosen-assignment" onsubmit="submitCreateAssignment(event)" class="py-5 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Pilih Mata Kuliah / Kelas</label>
+          <select id="modal-dosen-task-course" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Judul Tugas</label>
+          <input type="text" id="modal-dosen-task-title" required placeholder="Misal: Tugas 3 - Implementasi REST API"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Batas Waktu Pengumpulan (Deadline)</label>
+          <input type="datetime-local" id="modal-dosen-task-deadline" required
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi & Petunjuk Pengerjaan</label>
+          <textarea id="modal-dosen-task-desc" rows="3" required placeholder="Tuliskan instruksi tugas, format pengumpulan berkas (PDF/ZIP), dan kriteria penilaian..."
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeCreateAssignmentModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Publikasikan Tugas
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DOSEN BERI NILAI & FEEDBACK TUGAS -->
+  <!-- ========================================== -->
+  <div id="modal-dosen-grade-submission" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Penilaian & Feedback Tugas</h3>
+            <p class="text-xs text-slate-500">Nilai akan langsung dapat dilihat oleh mahasiswa</p>
+          </div>
+        </div>
+        <button onclick="closeGradeSubmissionModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="py-5 space-y-4">
+        <!-- Student & Task Details -->
+        <div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-1.5 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-400 font-semibold uppercase">Mahasiswa:</span>
+            <span id="grade-sub-student-name" class="font-bold text-slate-800">Budi Pratama Santoso</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400 font-semibold uppercase">NIM:</span>
+            <span id="grade-sub-student-nim" class="font-mono font-bold text-indigo-700">2024101001</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400 font-semibold uppercase">Tugas:</span>
+            <span id="grade-sub-task-title" class="font-semibold text-slate-700">Tugas 1</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400 font-semibold uppercase">Waktu Submit:</span>
+            <span id="grade-sub-time" class="text-slate-600">12 Nov 2026, 14:20 WIB</span>
+          </div>
+        </div>
+
+        <!-- Download Attached File Preview -->
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2 rounded-lg bg-indigo-600 text-white">
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p id="grade-sub-filename" class="text-xs font-bold text-slate-800">jawaban_tugas.pdf</p>
+              <p class="text-[10px] text-slate-400">Berkas unggahan mahasiswa</p>
+            </div>
+          </div>
+          <button onclick="downloadMockFile()" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition flex items-center gap-1">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            Unduh Berkas
+          </button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nilai Mahasiswa (Skala 0 - 100)</label>
+          <input type="number" id="grade-sub-score" min="0" max="100" placeholder="Contoh: 95"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Review / Feedback Dosen</label>
+          <textarea id="grade-sub-feedback" rows="3" placeholder="Tuliskan ulasan pengerjaan tugas, catatan kelebihan, atau hal yang perlu diperbaiki..."
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeGradeSubmissionModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Batal
+        </button>
+        <button type="button" onclick="saveGradeFeedback()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          Simpan & Kirim Nilai
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DOSEN BUKA SESI PRESENSI BARU -->
+  <!-- ========================================== -->
+  <div id="modal-dosen-create-attendance" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Buka Sesi Presensi Baru</h3>
+            <p class="text-xs text-slate-500">Buat sesi absensi perkuliahan</p>
+          </div>
+        </div>
+        <button onclick="closeDosenAttendanceModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-dosen-attendance-create" onsubmit="submitDosenCreateMeeting(event)" class="py-5 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Pertemuan ke-</label>
+          <input type="number" id="modal-create-att-num" min="1" max="16" required placeholder="Contoh: 6"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Topik Materi Pertemuan</label>
+          <input type="text" id="modal-create-att-topic" required placeholder="Misal: Arsitektur MVC & Routing"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tanggal Kuliah</label>
+          <input type="date" id="modal-create-att-date" required
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeDosenAttendanceModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Buka Sesi Presensi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADMIN TAMBAH/EDIT MAHASISWA -->
+  <!-- ========================================== -->
+  <div id="modal-admin-student" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base" id="modal-admin-student-title">Tambah Mahasiswa Baru</h3>
+            <p class="text-xs text-slate-500">Data akan tersimpan di sistem akademik</p>
+          </div>
+        </div>
+        <button onclick="closeStudentModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-admin-student" onsubmit="saveStudentModal(event)" class="py-5 space-y-4">
+        <input type="hidden" id="admin-student-is-edit" value="false">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">NIM Mahasiswa</label>
+            <input type="text" id="admin-student-nim" required placeholder="Contoh: 2024101005"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kata Sandi Akun</label>
+            <input type="password" id="admin-student-password" required value="123" placeholder="Sandi"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+          <input type="text" id="admin-student-name" required placeholder="Nama lengkap mahasiswa"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Kampus</label>
+          <input type="email" id="admin-student-email" required placeholder="mahasiswa@univ-nusantara.ac.id"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Program Studi</label>
+            <select id="admin-student-prodi" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
+              <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Semester Masuk</label>
+            <input type="number" id="admin-student-semester" min="1" max="14" value="1" required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">IPK Awal</label>
+            <input type="number" step="0.01" min="0" max="4.00" id="admin-student-ipk" value="3.50" required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Status Akademik</label>
+            <select id="admin-student-status" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="Aktif">Aktif</option>
+              <option value="Cuti">Cuti</option>
+              <option value="Nonaktif">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Dosen Pembimbing Akademik (PA)</label>
+          <input type="text" id="admin-student-pa" value="Dr. Ir. Hendra Setiawan, M.T." required
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeStudentModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Simpan Data Mahasiswa
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADMIN TAMBAH/EDIT DOSEN -->
+  <!-- ========================================== -->
+  <div id="modal-admin-lecturer" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base" id="modal-admin-lecturer-title">Tambah Dosen Baru</h3>
+            <p class="text-xs text-slate-500">Pencatatan data tenaga pengajar universitas</p>
+          </div>
+        </div>
+        <button onclick="closeLecturerModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-admin-lecturer" onsubmit="saveLecturerModal(event)" class="py-5 space-y-4">
+        <input type="hidden" id="admin-lecturer-is-edit" value="false">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">NIDN / NIP</label>
+            <input type="text" id="admin-lecturer-nidn" required placeholder="0012057803"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kata Sandi Akun</label>
+            <input type="password" id="admin-lecturer-password" required value="123" placeholder="Sandi"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap & Gelar</label>
+          <input type="text" id="admin-lecturer-name" required placeholder="Prof. Dr. Nama Lengkap, M.T."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Resmi</label>
+          <input type="email" id="admin-lecturer-email" required placeholder="dosen@univ-nusantara.ac.id"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Program Studi Homebase</label>
+            <select id="admin-lecturer-prodi" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+              <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
+              <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Jabatan Fungsional</label>
+            <select id="admin-lecturer-jabatan" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+              <option value="Dosen Lektor Kepala">Dosen Lektor Kepala</option>
+              <option value="Dosen Lektor">Dosen Lektor</option>
+              <option value="Asisten Ahli">Asisten Ahli</option>
+              <option value="Guru Besar / Profesor">Guru Besar / Profesor</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Mata Kuliah Yang Diampu</label>
+          <input type="text" id="admin-lecturer-courses" placeholder="Misal: Pemrograman Web Lanjut, RPL"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none">
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeLecturerModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Simpan Data Dosen
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADMIN TAMBAH/EDIT MATA KULIAH -->
+  <!-- ========================================== -->
+  <div id="modal-admin-course" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <i data-lucide="book-marked" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base" id="modal-admin-course-title">Tambah Mata Kuliah</h3>
+            <p class="text-xs text-slate-500">Master kurikulum mata kuliah</p>
+          </div>
+        </div>
+        <button onclick="closeCourseModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-admin-course" onsubmit="saveCourseModal(event)" class="py-5 space-y-4">
+        <input type="hidden" id="admin-course-is-edit" value="false">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kode Mata Kuliah</label>
+            <input type="text" id="admin-course-code" required placeholder="IF507"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Bobot SKS</label>
+            <input type="number" min="1" max="6" id="admin-course-sks" value="3" required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Mata Kuliah</label>
+          <input type="text" id="admin-course-name" required placeholder="Misal: Keamanan Informasi & Jaringan"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Semester</label>
+            <input type="number" min="1" max="8" id="admin-course-semester" value="5" required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Program Studi</label>
+            <select id="admin-course-prodi" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
+              <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+              <option value="Semua Prodi">Semua Prodi</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Dosen Pengampu Utama</label>
+          <input type="text" id="admin-course-lecturer" required placeholder="Dr. Ir. Hendra Setiawan, M.T."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeCourseModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Simpan Mata Kuliah
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADMIN TAMBAH/EDIT KELAS -->
+  <!-- ========================================== -->
+  <div id="modal-admin-class" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base" id="modal-admin-class-title">Buka Kelas Perkuliahan Baru</h3>
+            <p class="text-xs text-slate-500">Penjadwalan kelas dan kuota mahasiswa</p>
+          </div>
+        </div>
+        <button onclick="closeClassModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-admin-class" onsubmit="saveClassModal(event)" class="py-5 space-y-4">
+        <input type="hidden" id="admin-class-is-edit" value="false">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kode Kelas</label>
+            <input type="text" id="admin-class-code" required placeholder="IF501-A"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Mata Kuliah</label>
+            <select id="admin-class-course" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Jadwal Kuliah</label>
+            <input type="text" id="admin-class-schedule" required placeholder="Senin, 08:00 - 10:30"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Ruangan Kuliah</label>
+            <input type="text" id="admin-class-room" required placeholder="Lab Komputer 3"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Dosen Pengampu</label>
+          <input type="text" id="admin-class-lecturer" required placeholder="Dr. Ir. Hendra Setiawan, M.T."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kapasitas / Kuota Mahasiswa</label>
+          <input type="number" min="10" max="60" id="admin-class-quota" value="35" required
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeClassModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Simpan Kelas
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADMIN REVIEW & VALIDASI KRS -->
+  <!-- ========================================== -->
+  <div id="modal-admin-review-krs" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+            <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Validasi Kartu Rencana Studi (KRS)</h3>
+            <p class="text-xs text-slate-500">Tinjau mata kuliah yang dipilih oleh mahasiswa</p>
+          </div>
+        </div>
+        <button onclick="closeReviewKrsModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="py-5 space-y-4">
+        <!-- Student Info Header -->
+        <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-100 flex justify-between items-center text-xs">
+          <div>
+            <h4 class="font-extrabold text-slate-800 text-sm" id="admin-review-krs-name">Budi Pratama Santoso</h4>
+            <p class="font-mono text-purple-700 font-bold mt-0.5" id="admin-review-krs-nim">NIM: 2024101001 • Sem 5</p>
+            <p class="text-slate-500 mt-0.5" id="admin-review-krs-prodi">S1 Teknik Informatika</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-slate-500">Total SKS Diambil:</span>
+            <p class="text-lg font-black text-purple-700" id="admin-review-krs-total-sks">17 SKS</p>
+          </div>
+        </div>
+
+        <!-- Selected Courses List -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Mata Kuliah Yang Dipilih</label>
+          <div class="border border-slate-200 rounded-2xl overflow-hidden max-h-56 overflow-y-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-bold uppercase text-slate-500">
+                  <th class="py-2.5 px-3 w-20">Kode</th>
+                  <th class="py-2.5 px-3">Mata Kuliah</th>
+                  <th class="py-2.5 px-3 text-center w-12">SKS</th>
+                  <th class="py-2.5 px-3">Dosen</th>
+                </tr>
+              </thead>
+              <tbody id="admin-review-krs-courses-body">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Catatan Validasi dari Dosen PA / Akademik</label>
+          <textarea id="admin-review-krs-notes" rows="2" placeholder="Catatan persetujuan atau alasan meminta revisi..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <button type="button" onclick="rejectCurrentStudentKrs()" class="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5 border border-rose-200">
+          <i data-lucide="x-circle" class="w-4 h-4"></i>
+          Minta Revisi Mahasiswa
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeReviewKrsModal()" class="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+            Tutup
+          </button>
+          <button type="button" onclick="approveCurrentStudentKrs()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            Setujui & Validasi KRS
+          </button>
+        </div>
       </div>
     </div>
   </div>
